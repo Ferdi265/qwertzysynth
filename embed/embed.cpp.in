@@ -1,0 +1,6 @@
+#include <cstdint>
+
+extern const uint8_t @FILENAME@_data[] = {
+    @DATA@
+    0
+};
