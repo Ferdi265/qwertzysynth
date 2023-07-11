@@ -76,7 +76,7 @@ beat_state state;
 void update_audio(void * userdata, uint8_t * raw_buffer, int raw_len) {
     (void)userdata;
 
-    state.cur_note = cur_note>>octave;
+    state.cur_note = cur_note;
 
     std::span<int16_t> buffer(reinterpret_cast<int16_t *>(raw_buffer), reinterpret_cast<int16_t *>(raw_buffer + raw_len));
     for (size_t i = 0; i < buffer.size(); i++) {
@@ -126,23 +126,38 @@ void run(SDL_Renderer * renderer, SDL_Texture * texture) {
                             fmt::print("octave: {}\n", new_octave);
                             break;
                         }
-                        CASE('q') { cur_note = C*4; break; }
-                        CASE('2') { cur_note = Cis*4; break; }
-                        CASE('w') { cur_note = D*4; break; }
-                        CASE('3') { cur_note = Dis*4; break; }
-                        CASE('e') { cur_note = E*4; break; }
-                        CASE('r') { cur_note = F*4; break; }
-                        CASE('5') { cur_note = Fis*4; break; }
-                        CASE('t') { cur_note = G*4; break; }
-                        CASE('6') { cur_note = Gis*4; break; }
-                        CASE('z') { cur_note = A*4; break; }
-                        CASE('7') { cur_note = Ais*4; break; }
-                        CASE('u') { cur_note = B*4; break; }
-                        CASE('i') { cur_note = C*5; break; }
-                        CASE('9') { cur_note = Cis*5; break; }
-                        CASE('o') { cur_note = D*5; break; }
-                        CASE('0') { cur_note = Dis*5; break; }
-                        CASE('p') { cur_note = E*5; break; }
+                        CASE('q') { cur_note = C*4>>octave; break; }
+                        CASE('2') { cur_note = Cis*4>>octave; break; }
+                        CASE('w') { cur_note = D*4>>octave; break; }
+                        CASE('3') { cur_note = Dis*4>>octave; break; }
+                        CASE('e') { cur_note = E*4>>octave; break; }
+                        CASE('r') { cur_note = F*4>>octave; break; }
+                        CASE('5') { cur_note = Fis*4>>octave; break; }
+                        CASE('t') { cur_note = G*4>>octave; break; }
+                        CASE('6') { cur_note = Gis*4>>octave; break; }
+                        CASE('z') { cur_note = A*4>>octave; break; }
+                        CASE('7') { cur_note = Ais*4>>octave; break; }
+                        CASE('u') { cur_note = B*4>>octave; break; }
+                        CASE('i') { cur_note = C*5>>octave; break; }
+                        CASE('9') { cur_note = Cis*5>>octave; break; }
+                        CASE('o') { cur_note = D*5>>octave; break; }
+                        CASE('0') { cur_note = Dis*5>>octave; break; }
+                        CASE('p') { cur_note = E*5>>octave; break; }
+                        CASE('y') { cur_note = C*3>>octave; break; }
+                        CASE('s') { cur_note = Cis*3>>octave; break; }
+                        CASE('x') { cur_note = D*3>>octave; break; }
+                        CASE('d') { cur_note = Dis*3>>octave; break; }
+                        CASE('c') { cur_note = E*3>>octave; break; }
+                        CASE('v') { cur_note = F*3>>octave; break; }
+                        CASE('g') { cur_note = Fis*3>>octave; break; }
+                        CASE('b') { cur_note = G*3>>octave; break; }
+                        CASE('h') { cur_note = Gis*3>>octave; break; }
+                        CASE('n') { cur_note = A*3>>octave; break; }
+                        CASE('j') { cur_note = Ais*3>>octave; break; }
+                        CASE('m') { cur_note = B*3>>octave; break; }
+                        CASE(',') { cur_note = C*4>>octave; break; }
+                        CASE('l') { cur_note = Cis*4>>octave; break; }
+                        CASE('.') { cur_note = D*4>>octave; break; }
                         DEFAULT() {
                             fmt::print("key down: 0x{:x}\n", keysym);
                         }
