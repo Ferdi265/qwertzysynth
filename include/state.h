@@ -32,4 +32,5 @@ void keyboard_update(SDL_Event e);
 void synth_init();
 void synth_fini();
 void synth_note(note n);
+void synth_release(note n);
 void synth_update(std::span<int16_t> buffer);
