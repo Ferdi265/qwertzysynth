@@ -1,6 +1,7 @@
 #include <SDL.h>
-#include "state.h"
-#include "scope_guard.h"
+#include "util.hpp"
+#include "app.hpp"
+#include "scope_guard.hpp"
 
 void run() {
     while (true) {
@@ -12,27 +13,24 @@ void run() {
                 }
 
                 CASE(SDL_KEYDOWN) {
-                    keyboard_update(e);
+                    app->keyboard.update(e);
                     break;
                 }
 
                 CASE(SDL_KEYUP) {
-                    keyboard_update(e);
+                    app->keyboard.update(e);
                     break;
                 }
             }
         }
 
-        render_update();
+        app->render.update();
     }
 }
 
 int main() {
     scope_guard<[]{ SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER); }, SDL_Quit> sdl;
-    scope_guard<render_init, render_fini> render;
-    scope_guard<audio_init, audio_fini> audio;
-    scope_guard<keyboard_init, keyboard_fini> keyboard;
-    scope_guard<synth_init, synth_fini> synth;
+    App::instance();
 
     run();
 }

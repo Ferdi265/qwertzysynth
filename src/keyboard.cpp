@@ -1,15 +1,10 @@
-#include "state.h"
+#include <fmt/format.h>
+#include "app.hpp"
+#include "util.hpp"
 
 int octave = 0;
-void keyboard_init() {
 
-}
-
-void keyboard_fini() {
-
-}
-
-void keyboard_update(SDL_Event e) {
+void Keyboard::update(SDL_Event e) {
     switch (e.type) {
         CASE(SDL_KEYDOWN) {
             int keysym = e.key.keysym.sym;
@@ -24,38 +19,38 @@ void keyboard_update(SDL_Event e) {
                     fmt::print("octave: {}\n", new_octave);
                     break;
                 }
-                CASE('q') { synth_note(C*4>>octave); break; }
-                CASE('2') { synth_note(Cis*4>>octave); break; }
-                CASE('w') { synth_note(D*4>>octave); break; }
-                CASE('3') { synth_note(Dis*4>>octave); break; }
-                CASE('e') { synth_note(E*4>>octave); break; }
-                CASE('r') { synth_note(F*4>>octave); break; }
-                CASE('5') { synth_note(Fis*4>>octave); break; }
-                CASE('t') { synth_note(G*4>>octave); break; }
-                CASE('6') { synth_note(Gis*4>>octave); break; }
-                CASE('z') { synth_note(A*4>>octave); break; }
-                CASE('7') { synth_note(Ais*4>>octave); break; }
-                CASE('u') { synth_note(B*4>>octave); break; }
-                CASE('i') { synth_note(C*5>>octave); break; }
-                CASE('9') { synth_note(Cis*5>>octave); break; }
-                CASE('o') { synth_note(D*5>>octave); break; }
-                CASE('0') { synth_note(Dis*5>>octave); break; }
-                CASE('p') { synth_note(E*5>>octave); break; }
-                CASE('y') { synth_note(C*3>>octave); break; }
-                CASE('s') { synth_note(Cis*3>>octave); break; }
-                CASE('x') { synth_note(D*3>>octave); break; }
-                CASE('d') { synth_note(Dis*3>>octave); break; }
-                CASE('c') { synth_note(E*3>>octave); break; }
-                CASE('v') { synth_note(F*3>>octave); break; }
-                CASE('g') { synth_note(Fis*3>>octave); break; }
-                CASE('b') { synth_note(G*3>>octave); break; }
-                CASE('h') { synth_note(Gis*3>>octave); break; }
-                CASE('n') { synth_note(A*3>>octave); break; }
-                CASE('j') { synth_note(Ais*3>>octave); break; }
-                CASE('m') { synth_note(B*3>>octave); break; }
-                CASE(',') { synth_note(C*4>>octave); break; }
-                CASE('l') { synth_note(Cis*4>>octave); break; }
-                CASE('.') { synth_note(D*4>>octave); break; }
+                CASE('q') { app->synth.hit(C*4>>octave); break; }
+                CASE('2') { app->synth.hit(Cis*4>>octave); break; }
+                CASE('w') { app->synth.hit(D*4>>octave); break; }
+                CASE('3') { app->synth.hit(Dis*4>>octave); break; }
+                CASE('e') { app->synth.hit(E*4>>octave); break; }
+                CASE('r') { app->synth.hit(F*4>>octave); break; }
+                CASE('5') { app->synth.hit(Fis*4>>octave); break; }
+                CASE('t') { app->synth.hit(G*4>>octave); break; }
+                CASE('6') { app->synth.hit(Gis*4>>octave); break; }
+                CASE('z') { app->synth.hit(A*4>>octave); break; }
+                CASE('7') { app->synth.hit(Ais*4>>octave); break; }
+                CASE('u') { app->synth.hit(B*4>>octave); break; }
+                CASE('i') { app->synth.hit(C*5>>octave); break; }
+                CASE('9') { app->synth.hit(Cis*5>>octave); break; }
+                CASE('o') { app->synth.hit(D*5>>octave); break; }
+                CASE('0') { app->synth.hit(Dis*5>>octave); break; }
+                CASE('p') { app->synth.hit(E*5>>octave); break; }
+                CASE('y') { app->synth.hit(C*3>>octave); break; }
+                CASE('s') { app->synth.hit(Cis*3>>octave); break; }
+                CASE('x') { app->synth.hit(D*3>>octave); break; }
+                CASE('d') { app->synth.hit(Dis*3>>octave); break; }
+                CASE('c') { app->synth.hit(E*3>>octave); break; }
+                CASE('v') { app->synth.hit(F*3>>octave); break; }
+                CASE('g') { app->synth.hit(Fis*3>>octave); break; }
+                CASE('b') { app->synth.hit(G*3>>octave); break; }
+                CASE('h') { app->synth.hit(Gis*3>>octave); break; }
+                CASE('n') { app->synth.hit(A*3>>octave); break; }
+                CASE('j') { app->synth.hit(Ais*3>>octave); break; }
+                CASE('m') { app->synth.hit(B*3>>octave); break; }
+                CASE(',') { app->synth.hit(C*4>>octave); break; }
+                CASE('l') { app->synth.hit(Cis*4>>octave); break; }
+                CASE('.') { app->synth.hit(D*4>>octave); break; }
                 DEFAULT() {
                     fmt::print("key down: 0x{:x}\n", keysym);
                 }
@@ -71,38 +66,38 @@ void keyboard_update(SDL_Event e) {
                 CASE('-') {
                     break;
                 }
-                CASE('q') { synth_release(C*4>>octave); break; }
-                CASE('2') { synth_release(Cis*4>>octave); break; }
-                CASE('w') { synth_release(D*4>>octave); break; }
-                CASE('3') { synth_release(Dis*4>>octave); break; }
-                CASE('e') { synth_release(E*4>>octave); break; }
-                CASE('r') { synth_release(F*4>>octave); break; }
-                CASE('5') { synth_release(Fis*4>>octave); break; }
-                CASE('t') { synth_release(G*4>>octave); break; }
-                CASE('6') { synth_release(Gis*4>>octave); break; }
-                CASE('z') { synth_release(A*4>>octave); break; }
-                CASE('7') { synth_release(Ais*4>>octave); break; }
-                CASE('u') { synth_release(B*4>>octave); break; }
-                CASE('i') { synth_release(C*5>>octave); break; }
-                CASE('9') { synth_release(Cis*5>>octave); break; }
-                CASE('o') { synth_release(D*5>>octave); break; }
-                CASE('0') { synth_release(Dis*5>>octave); break; }
-                CASE('p') { synth_release(E*5>>octave); break; }
-                CASE('y') { synth_release(C*3>>octave); break; }
-                CASE('s') { synth_release(Cis*3>>octave); break; }
-                CASE('x') { synth_release(D*3>>octave); break; }
-                CASE('d') { synth_release(Dis*3>>octave); break; }
-                CASE('c') { synth_release(E*3>>octave); break; }
-                CASE('v') { synth_release(F*3>>octave); break; }
-                CASE('g') { synth_release(Fis*3>>octave); break; }
-                CASE('b') { synth_release(G*3>>octave); break; }
-                CASE('h') { synth_release(Gis*3>>octave); break; }
-                CASE('n') { synth_release(A*3>>octave); break; }
-                CASE('j') { synth_release(Ais*3>>octave); break; }
-                CASE('m') { synth_release(B*3>>octave); break; }
-                CASE(',') { synth_release(C*4>>octave); break; }
-                CASE('l') { synth_release(Cis*4>>octave); break; }
-                CASE('.') { synth_release(D*4>>octave); break; }
+                CASE('q') { app->synth.release(C*4>>octave); break; }
+                CASE('2') { app->synth.release(Cis*4>>octave); break; }
+                CASE('w') { app->synth.release(D*4>>octave); break; }
+                CASE('3') { app->synth.release(Dis*4>>octave); break; }
+                CASE('e') { app->synth.release(E*4>>octave); break; }
+                CASE('r') { app->synth.release(F*4>>octave); break; }
+                CASE('5') { app->synth.release(Fis*4>>octave); break; }
+                CASE('t') { app->synth.release(G*4>>octave); break; }
+                CASE('6') { app->synth.release(Gis*4>>octave); break; }
+                CASE('z') { app->synth.release(A*4>>octave); break; }
+                CASE('7') { app->synth.release(Ais*4>>octave); break; }
+                CASE('u') { app->synth.release(B*4>>octave); break; }
+                CASE('i') { app->synth.release(C*5>>octave); break; }
+                CASE('9') { app->synth.release(Cis*5>>octave); break; }
+                CASE('o') { app->synth.release(D*5>>octave); break; }
+                CASE('0') { app->synth.release(Dis*5>>octave); break; }
+                CASE('p') { app->synth.release(E*5>>octave); break; }
+                CASE('y') { app->synth.release(C*3>>octave); break; }
+                CASE('s') { app->synth.release(Cis*3>>octave); break; }
+                CASE('x') { app->synth.release(D*3>>octave); break; }
+                CASE('d') { app->synth.release(Dis*3>>octave); break; }
+                CASE('c') { app->synth.release(E*3>>octave); break; }
+                CASE('v') { app->synth.release(F*3>>octave); break; }
+                CASE('g') { app->synth.release(Fis*3>>octave); break; }
+                CASE('b') { app->synth.release(G*3>>octave); break; }
+                CASE('h') { app->synth.release(Gis*3>>octave); break; }
+                CASE('n') { app->synth.release(A*3>>octave); break; }
+                CASE('j') { app->synth.release(Ais*3>>octave); break; }
+                CASE('m') { app->synth.release(B*3>>octave); break; }
+                CASE(',') { app->synth.release(C*4>>octave); break; }
+                CASE('l') { app->synth.release(Cis*4>>octave); break; }
+                CASE('.') { app->synth.release(D*4>>octave); break; }
                 DEFAULT() {
                     fmt::print("key up: 0x{:x}\n", keysym);
                 }

@@ -1,11 +1,11 @@
 #include <cstdint>
+#include <span>
 #include <fmt/format.h>
-#include "state.h"
+#include "app.hpp"
 
 constexpr uint32_t SAMPLE_RATE = 48000;
 
-void audio_update(void * userdata, uint8_t * raw_buffer, int raw_len);
-void audio_init() {
+Audio::Audio() {
     SDL_AudioSpec audio_config {
         .freq = SAMPLE_RATE,
         .format = AUDIO_S16SYS,
@@ -14,14 +14,14 @@ void audio_init() {
         .samples = 0,
         .padding = 0,
         .size = 0,
-        .callback = audio_update,
+        .callback = &Audio::update,
         .userdata = nullptr
     };
 
-    state.audio = SDL_OpenAudioDevice(
+    device = SDL_OpenAudioDevice(
         nullptr, false, &audio_config, &audio_config, SDL_AUDIO_ALLOW_SAMPLES_CHANGE | SDL_AUDIO_ALLOW_FREQUENCY_CHANGE
     );
-    if (state.audio <= 0) {
+    if (device <= 0) {
         fmt::print("error: failed to open audio device\n");
         return;
     }
@@ -32,15 +32,15 @@ void audio_init() {
 
     fmt::print("info: buffer size is {} samples\n", audio_config.samples);
 
-    SDL_PauseAudioDevice(state.audio, false);
+    SDL_PauseAudioDevice(device, false);
 }
 
-void audio_fini() {
-    SDL_CloseAudioDevice(state.audio);
+Audio::~Audio() {
+    SDL_CloseAudioDevice(device);
 }
 
-void audio_update(void * userdata, uint8_t * raw_buffer, int raw_len) {
+void Audio::update(void * userdata, uint8_t * raw_buffer, int raw_len) {
     (void)userdata;
     std::span<int16_t> buffer((int16_t *)raw_buffer, (int16_t *)(raw_buffer + raw_len));
-    synth_update(buffer);
+    app->synth.update(buffer);
 }

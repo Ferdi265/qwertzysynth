@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cstdint>
-#include "note.h"
+#include <cassert>
+#include "note.hpp"
 
 constexpr uint32_t bpm_to_samples(uint32_t bpm, uint32_t sample_rate) {
     return 60. / bpm * sample_rate;
@@ -21,6 +22,8 @@ struct val {
 };
 
 constexpr double lerp(val a, val b, uint32_t t) {
+    assert(t >= a.t && "t is before a.t");
+    assert(t < b.t && "t is after b.t");
     return (b.v - a.v) * (t - a.t) / (b.t - a.t);
 }
 
@@ -53,7 +56,7 @@ constexpr adsr ADSR(uint32_t bpm, uint32_t sample_rate, double a, double d, doub
     uint32_t bpm_smp = bpm_to_samples(bpm, sample_rate);
     return adsr{
         uint32_t(bpm_smp * a),
-        uint32_t(bpm_smp * d),
+        uint32_t(bpm_smp * a) + uint32_t(bpm_smp * d),
         uint32_t(bpm_smp * r),
         al,
         sl
