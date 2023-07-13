@@ -51,6 +51,14 @@ struct note {
         return f;
     }
 
+    constexpr bool operator==(note o) const noexcept {
+        return n == o.n;
+    }
+
+    constexpr bool operator!=(note o) const noexcept {
+        return n != o.n;
+    }
+
     int n;
 };
 
