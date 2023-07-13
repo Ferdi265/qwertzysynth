@@ -1,7 +1,11 @@
 #pragma once
 
+#include <climits>
+#include <array>
+#include <optional>
 #include <SDL.h>
 #include "non_copyable.hpp"
+#include "note.hpp"
 
 struct Keyboard : non_copyable {
     Keyboard() = default;
@@ -9,5 +13,6 @@ struct Keyboard : non_copyable {
 
     void update(SDL_Event e);
 
-    int octave;
+    static constinit std::array<std::optional<note>, CHAR_MAX + 1> note_mapping;
+    int octave = 0;
 };
