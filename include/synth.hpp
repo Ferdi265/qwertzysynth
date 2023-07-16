@@ -20,16 +20,16 @@ struct Synth : non_copyable {
     Synth();
     ~Synth() = default;
 
-    void hit(note n);
-    void release(note n);
+    void hit(note n, uint32_t timestamp);
+    void release(note n, uint32_t timestamp);
     void update(std::span<int16_t> buffer);
 
-    uint32_t event_time();
+    uint32_t event_time(uint32_t timestamp);
     void process_events();
     int16_t sample_instrument(uint32_t t);
 
     lockfree_ring_queue<SynthEvent, 32> events;
-    std::atomic<std::chrono::steady_clock::time_point> t_batch;
+    std::atomic<uint32_t> t_batch;
 
     uint32_t t_batch_begin = 0;
     uint32_t t_sample = 0;

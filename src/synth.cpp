@@ -10,18 +10,20 @@ constexpr static uint32_t BPM = 120;
 constexpr static uint32_t SAMPLE_RATE = 48000;
 
 Synth::Synth() {
-    t_batch = std::chrono::steady_clock::now();
+    t_batch = SDL_GetTicks();
 }
 
-uint32_t Synth::event_time() {
-    std::chrono::steady_clock::duration t_diff = std::chrono::steady_clock::now() - t_batch.load();
+uint32_t Synth::event_time(uint32_t timestamp) {
+    std::chrono::milliseconds t_diff = std::chrono::milliseconds(timestamp - t_batch.load());
+    assert(t_diff.count() >= 0);
     uint32_t t = std::chrono::duration_cast<std::chrono::nanoseconds>(t_diff).count() * SAMPLE_RATE / 1'000'000;
     return t;
 }
 
-void Synth::hit(note n) {
+// TODO: use key event timestamp
+void Synth::hit(note n, uint32_t timestamp) {
     SynthEvent event = {
-        event_time(), n, true
+        event_time(timestamp), n, true
     };
 
     if (!events.push(event)) {
@@ -29,9 +31,10 @@ void Synth::hit(note n) {
     }
 }
 
-void Synth::release(note n) {
+// TODO: use key event timestamp
+void Synth::release(note n, uint32_t timestamp) {
     SynthEvent event = {
-        event_time(), n, false
+        event_time(timestamp), n, false
     };
 
     if (!events.push(event)) {
@@ -85,11 +88,11 @@ int16_t Synth::sample_instrument(uint32_t t) {
         level = vol_envelope.level(t - t_release, true);
     }
 
-    return triangle{ note_to_samples(*n, SAMPLE_RATE), 0, 1 }.level(t - t_hit) * level * (1 << 12);
+    return triangle{ note_to_samples(*n, SAMPLE_RATE), 0, level }.level(t - t_hit) * (1 << 12);
 }
 
 void Synth::update(std::span<int16_t> buffer) {
-    t_batch = std::chrono::steady_clock::now();
+    t_batch = SDL_GetTicks();
     t_batch_begin = t_sample;
 
     for (size_t i = 0; i < buffer.size(); i++) {

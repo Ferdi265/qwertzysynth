@@ -48,7 +48,7 @@ void Keyboard::update(SDL_Event e) {
 
             std::optional<note> keynote = (size_t)keysym < note_mapping.size() ? note_mapping[(size_t)keysym] : std::nullopt;
             if (keynote) {
-                app->synth.hit(*keynote >> octave);
+                app->synth.hit(*keynote >> octave, e.key.timestamp);
             } else {
                 switch (keysym) {
                     CASE('+') {
@@ -73,7 +73,7 @@ void Keyboard::update(SDL_Event e) {
 
             std::optional<note> keynote = (size_t)keysym < note_mapping.size() ? note_mapping[(size_t)keysym] : std::nullopt;
             if (keynote) {
-                app->synth.release(*keynote >> octave);
+                app->synth.release(*keynote >> octave, e.key.timestamp);
             } else {
                 switch (keysym) {
                     CASE('+') {
