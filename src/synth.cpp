@@ -13,13 +13,6 @@ Synth::Synth() {
     t_sdl_batch = SDL_GetTicks();
 }
 
-uint32_t Synth::event_time(uint32_t timestamp) {
-    std::chrono::milliseconds t_diff = std::chrono::milliseconds(timestamp - t_sdl_batch.load());
-    assert(t_diff.count() >= 0);
-    uint32_t t = std::chrono::duration_cast<std::chrono::nanoseconds>(t_diff).count() * SAMPLE_RATE / 1'000'000;
-    return t;
-}
-
 void Synth::hit(note n, uint32_t timestamp) {
     SynthEvent event = {
         event_time(timestamp), n, true
@@ -40,6 +33,49 @@ void Synth::release(note n, uint32_t timestamp) {
     }
 }
 
+void Synth::update(std::span<int16_t> buffer) {
+    t_sdl_batch = SDL_GetTicks();
+    t_batch = t_sample;
+
+    for (size_t i = 0; i < buffer.size(); i++, t_sample++) {
+        process_events();
+        buffer[i] = sample_instrument();
+    }
+}
+
+// --- private ---
+
+uint32_t Synth::event_time(uint32_t timestamp) const {
+    std::chrono::milliseconds t_diff = std::chrono::milliseconds(timestamp - t_sdl_batch.load());
+    assert(t_diff.count() >= 0);
+    uint32_t t = std::chrono::duration_cast<std::chrono::nanoseconds>(t_diff).count() * SAMPLE_RATE / 1'000'000;
+    return t;
+}
+
+uint32_t Synth::hit_time() const {
+    return t_hit == -1U ? -1U : t_sample - t_hit;
+}
+
+uint32_t Synth::release_time() const {
+    return t_release == -1U ? -1U : t_sample - t_release;
+}
+
+void Synth::do_hit(note nt) {
+    n = nt;
+    t_hit = t_sample;
+    t_release = -1U;
+}
+
+void Synth::do_release() {
+    t_release = t_sample;
+}
+
+void Synth::do_off() {
+    n = std::nullopt;
+    t_hit = -1U;
+    t_release = -1U;
+}
+
 void Synth::process_events() {
     while (true) {
         // get at least one event if no event pending
@@ -52,13 +88,9 @@ void Synth::process_events() {
 
         if (e && t_batch + e->t >= t_sample) {
             if (e->hit) {
-                // new note hit
-                t_hit = t_sample;
-                t_release = -1U;
-                n = e->n;
+                do_hit(e->n);
             } else {
-                // current note released
-                t_release = t_sample;
+                do_release();
             }
 
             // get another event
@@ -72,27 +104,17 @@ void Synth::process_events() {
 }
 
 constexpr adsr vol_envelope = ADSR(BPM, SAMPLE_RATE, 1./32, 1./4, 3./4, 1.2, 1);
-int16_t Synth::sample_instrument(uint32_t t) {
+int16_t Synth::sample_instrument() {
     if (!n.has_value()) {
         return 0;
     }
 
-    double level = vol_envelope.level(t - t_hit, t_release == -1U ? -1U : t - t_release);
-    int16_t sample = triangle{ note_to_samples(*n, SAMPLE_RATE), 0, level }.level(t - t_hit) * (1 << 12);
+    double level = vol_envelope.level(hit_time(), release_time());
+    int16_t sample = triangle{ note_to_samples(*n, SAMPLE_RATE), 0, level }.level(hit_time()) * (1 << 12);
 
-    if (t_release != -1U && vol_envelope.release_done(t - t_release)) {
-        n = std::nullopt;
+    if (t_release != -1U && vol_envelope.release_done(release_time())) {
+        do_off();
     }
 
     return sample;
-}
-
-void Synth::update(std::span<int16_t> buffer) {
-    t_sdl_batch = SDL_GetTicks();
-    t_batch = t_sample;
-
-    for (size_t i = 0; i < buffer.size(); i++) {
-        process_events();
-        buffer[i] = sample_instrument(t_sample++);
-    }
 }
