@@ -10,17 +10,16 @@ constexpr static uint32_t BPM = 120;
 constexpr static uint32_t SAMPLE_RATE = 48000;
 
 Synth::Synth() {
-    t_batch = SDL_GetTicks();
+    t_sdl_batch = SDL_GetTicks();
 }
 
 uint32_t Synth::event_time(uint32_t timestamp) {
-    std::chrono::milliseconds t_diff = std::chrono::milliseconds(timestamp - t_batch.load());
+    std::chrono::milliseconds t_diff = std::chrono::milliseconds(timestamp - t_sdl_batch.load());
     assert(t_diff.count() >= 0);
     uint32_t t = std::chrono::duration_cast<std::chrono::nanoseconds>(t_diff).count() * SAMPLE_RATE / 1'000'000;
     return t;
 }
 
-// TODO: use key event timestamp
 void Synth::hit(note n, uint32_t timestamp) {
     SynthEvent event = {
         event_time(timestamp), n, true
@@ -31,7 +30,6 @@ void Synth::hit(note n, uint32_t timestamp) {
     }
 }
 
-// TODO: use key event timestamp
 void Synth::release(note n, uint32_t timestamp) {
     SynthEvent event = {
         event_time(timestamp), n, false
@@ -52,7 +50,7 @@ void Synth::process_events() {
             e = events.pop();
         }
 
-        if (e && t_batch_begin + e->t >= t_sample) {
+        if (e && t_batch + e->t >= t_sample) {
             if (e->hit) {
                 // new note hit
                 t_hit = t_sample;
@@ -73,27 +71,25 @@ void Synth::process_events() {
     }
 }
 
-constexpr adsr vol_envelope = adsr{ 10, 10, 10, 1, 1 };
+constexpr adsr vol_envelope = ADSR(BPM, SAMPLE_RATE, 1./32, 1./4, 1, 1.2, 1);
 int16_t Synth::sample_instrument(uint32_t t) {
     if (!n.has_value()) {
         return 0;
     }
 
-    double level = 0;
-    if (!app->synth.n.has_value()) {
-        return level;
-    } else if (app->synth.t_release == -1U) {
-        level = vol_envelope.level(t - t_hit, false);
-    } else {
-        level = vol_envelope.level(t - t_release, true);
+    double level = vol_envelope.level(t - t_hit, t_release == -1U ? -1U : t - t_release);
+    int16_t sample = triangle{ note_to_samples(*n, SAMPLE_RATE), 0, level }.level(t - t_hit) * (1 << 12);
+
+    if (t_release != -1U && vol_envelope.release_done(t - t_release)) {
+        n = std::nullopt;
     }
 
-    return triangle{ note_to_samples(*n, SAMPLE_RATE), 0, level }.level(t - t_hit) * (1 << 12);
+    return sample;
 }
 
 void Synth::update(std::span<int16_t> buffer) {
-    t_batch = SDL_GetTicks();
-    t_batch_begin = t_sample;
+    t_sdl_batch = SDL_GetTicks();
+    t_batch = t_sample;
 
     for (size_t i = 0; i < buffer.size(); i++) {
         process_events();

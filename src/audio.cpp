@@ -11,7 +11,7 @@ Audio::Audio() {
         .format = AUDIO_S16SYS,
         .channels = 1,
         .silence = 0,
-        .samples = 0,
+        .samples = 1024,
         .padding = 0,
         .size = 0,
         .callback = &Audio::update,

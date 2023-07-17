@@ -45,6 +45,10 @@ void Keyboard::update(SDL_Event e) {
     switch (e.type) {
         CASE(SDL_KEYDOWN) {
             int keysym = e.key.keysym.sym;
+            if (e.key.repeat) {
+                // ignore key repeats
+                return;
+            }
 
             std::optional<note> keynote = (size_t)keysym < note_mapping.size() ? note_mapping[(size_t)keysym] : std::nullopt;
             if (keynote) {

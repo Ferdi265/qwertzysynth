@@ -23,8 +23,8 @@ struct val {
 
 constexpr double lerp(val a, val b, uint32_t t) {
     assert(t >= a.t && "t is before a.t");
-    assert(t < b.t && "t is after b.t");
-    return (b.v - a.v) * (t - a.t) / (b.t - a.t);
+    assert(t <= b.t && "t is after b.t");
+    return a.v + (b.v - a.v) * (t - a.t) / (b.t - a.t);
 }
 
 struct adsr {
@@ -34,22 +34,25 @@ struct adsr {
     double attack_level;
     double sustain_level;
 
-    constexpr double level(uint32_t t, bool release) const {
-        if (!release) {
-            if (t < attack_time) {
-                return lerp({ 0, 0 }, { attack_time, attack_level }, t);
-            } else if (t < decay_time) {
-                return lerp({ attack_time, attack_level }, { decay_time, sustain_level }, t);
-            } else {
-                return sustain_level;
-            }
+    constexpr double level(uint32_t t_hit, uint32_t t_release) const {
+        double level;
+        if (t_hit < attack_time) {
+            level = lerp({ 0, 0 }, { attack_time, attack_level }, t_hit);
+        } else if (t_hit < decay_time) {
+            level = lerp({ attack_time, attack_level }, { decay_time, sustain_level }, t_hit);
         } else {
-            if (t < release_time) {
-                return lerp({ 0, sustain_level }, { release_time, 0 }, t);
-            } else {
-                return 0;
-            }
+            level = sustain_level;
         }
+
+        if (t_release == -1U) {
+            return level;
+        } else {
+            return lerp({ 0, level }, { release_time, 0 }, t_release);
+        }
+    }
+
+    constexpr bool release_done(uint32_t t_release) const {
+        return t_release >= release_time;
     }
 };
 constexpr adsr ADSR(uint32_t bpm, uint32_t sample_rate, double a, double d, double r, double al, double sl) {

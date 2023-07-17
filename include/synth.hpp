@@ -29,9 +29,9 @@ struct Synth : non_copyable {
     int16_t sample_instrument(uint32_t t);
 
     lockfree_ring_queue<SynthEvent, 32> events;
-    std::atomic<uint32_t> t_batch;
+    std::atomic<uint32_t> t_sdl_batch;
 
-    uint32_t t_batch_begin = 0;
+    uint32_t t_batch = 0;
     uint32_t t_sample = 0;
     uint32_t t_hit = -1U;
     uint32_t t_release = -1U;
