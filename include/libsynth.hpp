@@ -52,7 +52,7 @@ struct adsr {
     }
 
     constexpr bool release_done(uint32_t t_release) const {
-        return t_release >= release_time;
+        return t_release != -1U && t_release >= release_time;
     }
 };
 constexpr adsr ADSR(uint32_t bpm, uint32_t sample_rate, double a, double d, double r, double al, double sl) {

@@ -112,7 +112,7 @@ int16_t Synth::sample_instrument() {
     double level = vol_envelope.level(hit_time(), release_time());
     int16_t sample = triangle{ note_to_samples(*n, SAMPLE_RATE), 0, level }.level(hit_time()) * (1 << 12);
 
-    if (t_release != -1U && vol_envelope.release_done(release_time())) {
+    if (vol_envelope.release_done(release_time())) {
         do_off();
     }
 
