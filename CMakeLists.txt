@@ -15,8 +15,9 @@ set_property(TARGET musictest PROPERTY CXX_STANDARD 20)
 set_property(TARGET musictest PROPERTY CXX_STANDARD_REQUIRED ON)
 
 # sources
-file(GLOB musictest-sources src/*.cpp)
+file(GLOB musictest-sources CONFIGURE_DEPENDS src/*.cpp)
 target_sources(musictest PRIVATE ${musictest-sources})
+target_compile_options(musictest PRIVATE -UNDEBUG)
 target_include_directories(musictest PRIVATE include/)
 
 # embedded files
