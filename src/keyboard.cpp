@@ -1,9 +1,10 @@
+#include <SDL_keycode.h>
 #include <fmt/format.h>
 #include "app.hpp"
 #include "util.hpp"
 
-constinit std::array<std::optional<note>, CHAR_MAX + 1> Keyboard::note_mapping = []{
-    std::array<std::optional<note>, CHAR_MAX + 1> note_mapping = {};
+constinit std::array<std::optional<note>, UCHAR_MAX + 1> Keyboard::note_mapping = []{
+    std::array<std::optional<note>, UCHAR_MAX + 1> note_mapping = {};
 
     note_mapping['q'] = C*4;
     note_mapping['2'] = Cis*4;
@@ -22,6 +23,7 @@ constinit std::array<std::optional<note>, CHAR_MAX + 1> Keyboard::note_mapping =
     note_mapping['o'] = D*5;
     note_mapping['0'] = Dis*5;
     note_mapping['p'] = E*5;
+
     note_mapping['y'] = C*3;
     note_mapping['s'] = Cis*3;
     note_mapping['x'] = D*3;
@@ -37,6 +39,8 @@ constinit std::array<std::optional<note>, CHAR_MAX + 1> Keyboard::note_mapping =
     note_mapping[','] = C*4;
     note_mapping['l'] = Cis*4;
     note_mapping['.'] = D*4;
+    note_mapping[0xf6 /* ö */] = Dis*4;
+    note_mapping['-'] = E*4;
 
     return note_mapping;
 }();
@@ -55,18 +59,18 @@ void Keyboard::update(SDL_Event e) {
                 app->synth.hit(*keynote >> octave, e.key.timestamp);
             } else {
                 switch (keysym) {
-                    CASE('+') {
+                    CASE(SDLK_KP_PLUS) {
                         int new_octave = ++octave;
                         fmt::print("octave: {}\n", new_octave);
                         break;
                     }
-                    CASE('-') {
+                    CASE(SDLK_KP_MINUS) {
                         int new_octave = --octave;
                         fmt::print("octave: {}\n", new_octave);
                         break;
                     }
                     DEFAULT() {
-                        fmt::print("key down: 0x{:x}\n", keysym);
+                        //fmt::print("key down: 0x{:x}\n", keysym);
                     }
                 }
             }
@@ -80,14 +84,8 @@ void Keyboard::update(SDL_Event e) {
                 app->synth.release(*keynote >> octave, e.key.timestamp);
             } else {
                 switch (keysym) {
-                    CASE('+') {
-                        break;
-                    }
-                    CASE('-') {
-                        break;
-                    }
                     DEFAULT() {
-                        fmt::print("key up: 0x{:x}\n", keysym);
+                        //fmt::print("key up: 0x{:x}\n", keysym);
                     }
                 }
             }

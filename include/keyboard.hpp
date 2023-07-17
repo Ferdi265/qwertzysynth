@@ -13,6 +13,6 @@ struct Keyboard : non_copyable {
 
     void update(SDL_Event e);
 
-    static constinit std::array<std::optional<note>, CHAR_MAX + 1> note_mapping;
+    static constinit std::array<std::optional<note>, UCHAR_MAX + 1> note_mapping;
     int octave = 0;
 };
