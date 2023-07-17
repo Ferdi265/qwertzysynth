@@ -9,6 +9,7 @@ constinit std::array<std::optional<note>, UCHAR_MAX + 1> Keyboard::note_mapping 
 
     if (QWERTUOSO) {
         // Qwertuoso
+
         note_mapping['1'] = C*2;
         note_mapping['2'] = Dis*2;
         note_mapping['3'] = Fis*2;
@@ -59,6 +60,8 @@ constinit std::array<std::optional<note>, UCHAR_MAX + 1> Keyboard::note_mapping 
         note_mapping['.'] = Dis*4;
         note_mapping['-'] = Fis*4;
     } else {
+        // Piano
+
         note_mapping['2'] = Cis*4;
         note_mapping['3'] = Dis*4;
         note_mapping['5'] = Fis*4;
@@ -77,6 +80,8 @@ constinit std::array<std::optional<note>, UCHAR_MAX + 1> Keyboard::note_mapping 
         note_mapping['i'] = C*5;
         note_mapping['o'] = D*5;
         note_mapping['p'] = E*5;
+        note_mapping[0xfc /* 'ü' */] = F*5;
+        note_mapping['+'] = G*5;
 
         note_mapping['s'] = Cis*3;
         note_mapping['d'] = Dis*3;
@@ -85,6 +90,7 @@ constinit std::array<std::optional<note>, UCHAR_MAX + 1> Keyboard::note_mapping 
         note_mapping['j'] = Ais*3;
         note_mapping['l'] = Cis*4;
         note_mapping[0xf6 /* ö */] = Dis*4;
+        note_mapping['#'] = Fis*4;
 
         note_mapping['<'] = B*2;
         note_mapping['y'] = C*3;
