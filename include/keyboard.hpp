@@ -6,13 +6,14 @@
 #include <SDL.h>
 #include "non_copyable.hpp"
 #include "note.hpp"
+#include "cli.hpp"
 
 struct Keyboard : non_copyable {
-    Keyboard() = default;
+    Keyboard(CLIArgs args);
     ~Keyboard() = default;
 
     void update(SDL_Event e);
 
-    static constinit std::array<std::optional<note>, UCHAR_MAX + 1> note_mapping;
+    std::array<std::optional<note>, UCHAR_MAX + 1> note_mapping = {};
     int octave = 0;
 };

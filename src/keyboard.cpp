@@ -1,15 +1,56 @@
 #include <SDL_keycode.h>
 #include <fmt/format.h>
 #include "app.hpp"
+#include "cli.hpp"
 #include "util.hpp"
 
-constexpr bool QWERTUOSO = false;
-constinit std::array<std::optional<note>, UCHAR_MAX + 1> Keyboard::note_mapping = []{
-    std::array<std::optional<note>, UCHAR_MAX + 1> note_mapping = {};
+Keyboard::Keyboard(CLIArgs args) {
+    if (args.kb_layout == KeyboardLayout::Piano) {
+        note_mapping['2'] = Cis*4;
+        note_mapping['3'] = Dis*4;
+        note_mapping['5'] = Fis*4;
+        note_mapping['6'] = Gis*4;
+        note_mapping['7'] = Ais*4;
+        note_mapping['9'] = Cis*5;
+        note_mapping['0'] = Dis*5;
 
-    if (QWERTUOSO) {
+        note_mapping['q'] = C*4;
+        note_mapping['w'] = D*4;
+        note_mapping['e'] = E*4;
+        note_mapping['r'] = F*4;
+        note_mapping['t'] = G*4;
+        note_mapping['z'] = A*4;
+        note_mapping['u'] = B*4;
+        note_mapping['i'] = C*5;
+        note_mapping['o'] = D*5;
+        note_mapping['p'] = E*5;
+        note_mapping[0xfc /* 'ü' */] = F*5;
+        note_mapping['+'] = G*5;
+
+        note_mapping['s'] = Cis*3;
+        note_mapping['d'] = Dis*3;
+        note_mapping['g'] = Fis*3;
+        note_mapping['h'] = Gis*3;
+        note_mapping['j'] = Ais*3;
+        note_mapping['l'] = Cis*4;
+        note_mapping[0xf6 /* ö */] = Dis*4;
+        note_mapping['#'] = Fis*4;
+
+        note_mapping['<'] = B*2;
+        note_mapping['y'] = C*3;
+        note_mapping['x'] = D*3;
+        note_mapping['c'] = E*3;
+        note_mapping['v'] = F*3;
+        note_mapping['b'] = G*3;
+        note_mapping['n'] = A*3;
+        note_mapping['m'] = B*3;
+        note_mapping[','] = C*4;
+        note_mapping['.'] = D*4;
+        note_mapping['-'] = E*4;
+    } else if (args.kb_layout == KeyboardLayout::CGriff) {
+        fmt::print("TODO: implement CGriff\n");
+    } else if (args.kb_layout == KeyboardLayout::BGriff) {
         // Qwertuoso
-
         note_mapping['1'] = C*2;
         note_mapping['2'] = Dis*2;
         note_mapping['3'] = Fis*2;
@@ -60,53 +101,9 @@ constinit std::array<std::optional<note>, UCHAR_MAX + 1> Keyboard::note_mapping 
         note_mapping['.'] = Dis*4;
         note_mapping['-'] = Fis*4;
     } else {
-        // Piano
-
-        note_mapping['2'] = Cis*4;
-        note_mapping['3'] = Dis*4;
-        note_mapping['5'] = Fis*4;
-        note_mapping['6'] = Gis*4;
-        note_mapping['7'] = Ais*4;
-        note_mapping['9'] = Cis*5;
-        note_mapping['0'] = Dis*5;
-
-        note_mapping['q'] = C*4;
-        note_mapping['w'] = D*4;
-        note_mapping['e'] = E*4;
-        note_mapping['r'] = F*4;
-        note_mapping['t'] = G*4;
-        note_mapping['z'] = A*4;
-        note_mapping['u'] = B*4;
-        note_mapping['i'] = C*5;
-        note_mapping['o'] = D*5;
-        note_mapping['p'] = E*5;
-        note_mapping[0xfc /* 'ü' */] = F*5;
-        note_mapping['+'] = G*5;
-
-        note_mapping['s'] = Cis*3;
-        note_mapping['d'] = Dis*3;
-        note_mapping['g'] = Fis*3;
-        note_mapping['h'] = Gis*3;
-        note_mapping['j'] = Ais*3;
-        note_mapping['l'] = Cis*4;
-        note_mapping[0xf6 /* ö */] = Dis*4;
-        note_mapping['#'] = Fis*4;
-
-        note_mapping['<'] = B*2;
-        note_mapping['y'] = C*3;
-        note_mapping['x'] = D*3;
-        note_mapping['c'] = E*3;
-        note_mapping['v'] = F*3;
-        note_mapping['b'] = G*3;
-        note_mapping['n'] = A*3;
-        note_mapping['m'] = B*3;
-        note_mapping[','] = C*4;
-        note_mapping['.'] = D*4;
-        note_mapping['-'] = E*4;
+        fmt::print("error: invalid keyboard layout: {}\n", (int)args.kb_layout);
     }
-
-    return note_mapping;
-}();
+}
 
 void Keyboard::update(SDL_Event e) {
     switch (e.type) {

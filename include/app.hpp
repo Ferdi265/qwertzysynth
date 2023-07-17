@@ -9,7 +9,7 @@
 #include "synth.hpp"
 
 struct App : non_copyable {
-    App();
+    App(CLIArgs args);
     ~App() = default;
 
     void run();
