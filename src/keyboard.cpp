@@ -3,44 +3,94 @@
 #include "app.hpp"
 #include "util.hpp"
 
+constexpr bool CHROMATIC_BUTTON_ACCORDION = true;
 constinit std::array<std::optional<note>, UCHAR_MAX + 1> Keyboard::note_mapping = []{
     std::array<std::optional<note>, UCHAR_MAX + 1> note_mapping = {};
 
-    note_mapping['q'] = C*4;
-    note_mapping['2'] = Cis*4;
-    note_mapping['w'] = D*4;
-    note_mapping['3'] = Dis*4;
-    note_mapping['e'] = E*4;
-    note_mapping['r'] = F*4;
-    note_mapping['5'] = Fis*4;
-    note_mapping['t'] = G*4;
-    note_mapping['6'] = Gis*4;
-    note_mapping['z'] = A*4;
-    note_mapping['7'] = Ais*4;
-    note_mapping['u'] = B*4;
-    note_mapping['i'] = C*5;
-    note_mapping['9'] = Cis*5;
-    note_mapping['o'] = D*5;
-    note_mapping['0'] = Dis*5;
-    note_mapping['p'] = E*5;
+    if (CHROMATIC_BUTTON_ACCORDION) {
+        // C system
+        note_mapping['1'] = C*2;
+        note_mapping['2'] = Dis*2;
+        note_mapping['3'] = Fis*2;
+        note_mapping['4'] = A*2;
+        note_mapping['5'] = C*3;
+        note_mapping['6'] = Dis*3;
+        note_mapping['7'] = Fis*3;
+        note_mapping['8'] = A*3;
+        note_mapping['9'] = C*4;
+        note_mapping['0'] = Dis*4;
+        note_mapping[0xdf /* ß */] = Fis*4;
+        note_mapping['q'] = D*2;
+        note_mapping['w'] = F*2;
+        note_mapping['e'] = Gis*2;
+        note_mapping['r'] = B*2;
+        note_mapping['t'] = D*3;
+        note_mapping['z'] = F*3;
+        note_mapping['u'] = Gis*3;
+        note_mapping['i'] = B*3;
+        note_mapping['o'] = D*4;
+        note_mapping['p'] = F*4;
+        note_mapping[0xfc /* 'ü' */] = Gis*4;
+        note_mapping['+'] = B*4;
+        note_mapping['a'] = E*2;
+        note_mapping['s'] = G*2;
+        note_mapping['d'] = Ais*2;
+        note_mapping['f'] = Cis*3;
+        note_mapping['g'] = E*3;
+        note_mapping['h'] = G*3;
+        note_mapping['j'] = Ais*3;
+        note_mapping['k'] = Cis*4;
+        note_mapping['l'] = E*4;
+        note_mapping[0xf6 /* 'ö' */] = G*4;
+        note_mapping[0xe4 /* 'ä' */] = Ais*4;
+        note_mapping['#'] = Cis*5;
+        note_mapping['y'] = Fis*2;
+        note_mapping['x'] = A*2;
+        note_mapping['c'] = C*3;
+        note_mapping['v'] = Dis*3;
+        note_mapping['b'] = Fis*3;
+        note_mapping['n'] = A*3;
+        note_mapping['m'] = C*4;
+        note_mapping[','] = Dis*4;
+        note_mapping['.'] = Fis*4;
+        note_mapping['-'] = A*4;
+    } else {
+        note_mapping['q'] = C*4;
+        note_mapping['2'] = Cis*4;
+        note_mapping['w'] = D*4;
+        note_mapping['3'] = Dis*4;
+        note_mapping['e'] = E*4;
+        note_mapping['r'] = F*4;
+        note_mapping['5'] = Fis*4;
+        note_mapping['t'] = G*4;
+        note_mapping['6'] = Gis*4;
+        note_mapping['z'] = A*4;
+        note_mapping['7'] = Ais*4;
+        note_mapping['u'] = B*4;
+        note_mapping['i'] = C*5;
+        note_mapping['9'] = Cis*5;
+        note_mapping['o'] = D*5;
+        note_mapping['0'] = Dis*5;
+        note_mapping['p'] = E*5;
 
-    note_mapping['y'] = C*3;
-    note_mapping['s'] = Cis*3;
-    note_mapping['x'] = D*3;
-    note_mapping['d'] = Dis*3;
-    note_mapping['c'] = E*3;
-    note_mapping['v'] = F*3;
-    note_mapping['g'] = Fis*3;
-    note_mapping['b'] = G*3;
-    note_mapping['h'] = Gis*3;
-    note_mapping['n'] = A*3;
-    note_mapping['j'] = Ais*3;
-    note_mapping['m'] = B*3;
-    note_mapping[','] = C*4;
-    note_mapping['l'] = Cis*4;
-    note_mapping['.'] = D*4;
-    note_mapping[0xf6 /* ö */] = Dis*4;
-    note_mapping['-'] = E*4;
+        note_mapping['y'] = C*3;
+        note_mapping['s'] = Cis*3;
+        note_mapping['x'] = D*3;
+        note_mapping['d'] = Dis*3;
+        note_mapping['c'] = E*3;
+        note_mapping['v'] = F*3;
+        note_mapping['g'] = Fis*3;
+        note_mapping['b'] = G*3;
+        note_mapping['h'] = Gis*3;
+        note_mapping['n'] = A*3;
+        note_mapping['j'] = Ais*3;
+        note_mapping['m'] = B*3;
+        note_mapping[','] = C*4;
+        note_mapping['l'] = Cis*4;
+        note_mapping['.'] = D*4;
+        note_mapping[0xf6 /* ö */] = Dis*4;
+        note_mapping['-'] = E*4;
+    }
 
     return note_mapping;
 }();
@@ -70,7 +120,7 @@ void Keyboard::update(SDL_Event e) {
                         break;
                     }
                     DEFAULT() {
-                        //fmt::print("key down: 0x{:x}\n", keysym);
+                        fmt::print("key down: 0x{:x}\n", keysym);
                     }
                 }
             }
