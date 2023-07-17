@@ -47,6 +47,7 @@ constinit std::array<std::optional<note>, UCHAR_MAX + 1> Keyboard::note_mapping 
         note_mapping[0xe4 /* 'ä' */] = Gis*4;
         note_mapping['#'] = B*4;
 
+        note_mapping['<'] = C*2;
         note_mapping['y'] = Dis*2;
         note_mapping['x'] = Fis*2;
         note_mapping['c'] = A*2;
@@ -58,40 +59,43 @@ constinit std::array<std::optional<note>, UCHAR_MAX + 1> Keyboard::note_mapping 
         note_mapping['.'] = Dis*4;
         note_mapping['-'] = Fis*4;
     } else {
-        note_mapping['q'] = C*4;
         note_mapping['2'] = Cis*4;
-        note_mapping['w'] = D*4;
         note_mapping['3'] = Dis*4;
+        note_mapping['5'] = Fis*4;
+        note_mapping['6'] = Gis*4;
+        note_mapping['7'] = Ais*4;
+        note_mapping['9'] = Cis*5;
+        note_mapping['0'] = Dis*5;
+
+        note_mapping['q'] = C*4;
+        note_mapping['w'] = D*4;
         note_mapping['e'] = E*4;
         note_mapping['r'] = F*4;
-        note_mapping['5'] = Fis*4;
         note_mapping['t'] = G*4;
-        note_mapping['6'] = Gis*4;
         note_mapping['z'] = A*4;
-        note_mapping['7'] = Ais*4;
         note_mapping['u'] = B*4;
         note_mapping['i'] = C*5;
-        note_mapping['9'] = Cis*5;
         note_mapping['o'] = D*5;
-        note_mapping['0'] = Dis*5;
         note_mapping['p'] = E*5;
 
-        note_mapping['y'] = C*3;
         note_mapping['s'] = Cis*3;
-        note_mapping['x'] = D*3;
         note_mapping['d'] = Dis*3;
+        note_mapping['g'] = Fis*3;
+        note_mapping['h'] = Gis*3;
+        note_mapping['j'] = Ais*3;
+        note_mapping['l'] = Cis*4;
+        note_mapping[0xf6 /* ö */] = Dis*4;
+
+        note_mapping['<'] = B*2;
+        note_mapping['y'] = C*3;
+        note_mapping['x'] = D*3;
         note_mapping['c'] = E*3;
         note_mapping['v'] = F*3;
-        note_mapping['g'] = Fis*3;
         note_mapping['b'] = G*3;
-        note_mapping['h'] = Gis*3;
         note_mapping['n'] = A*3;
-        note_mapping['j'] = Ais*3;
         note_mapping['m'] = B*3;
         note_mapping[','] = C*4;
-        note_mapping['l'] = Cis*4;
         note_mapping['.'] = D*4;
-        note_mapping[0xf6 /* ö */] = Dis*4;
         note_mapping['-'] = E*4;
     }
 
