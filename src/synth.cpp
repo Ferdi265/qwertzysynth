@@ -3,7 +3,6 @@
 
 #include "app.hpp"
 
-#include "lockfree-ring-queue.hpp"
 #include "libsynth.hpp"
 
 constexpr static uint32_t BPM = 120;

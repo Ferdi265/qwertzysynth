@@ -3,7 +3,11 @@
 #include "app.hpp"
 #include "scope_guard.hpp"
 
-void run() {
+App::App() {
+
+}
+
+void App::run() {
     while (true) {
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
@@ -29,8 +33,8 @@ void run() {
 }
 
 int main() {
-    scope_guard<[]{ SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER); }, SDL_Quit> sdl;
-    App::instance();
+    scope_guard<[]{ SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER); }, SDL_Quit> sdl_guard;
+    scope_guard<[]{ app.construct(); }, []{ app.destruct(); }> app_guard;
 
-    run();
+    app->run();
 }

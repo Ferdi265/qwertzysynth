@@ -8,7 +8,7 @@
 #include <SDL.h>
 #include "non_copyable.hpp"
 #include "note.hpp"
-#include "lockfree-ring-queue.hpp"
+#include "lockfree_ring_queue.hpp"
 
 struct SynthEvent {
     uint32_t t;

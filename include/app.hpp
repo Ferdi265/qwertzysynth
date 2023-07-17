@@ -1,7 +1,7 @@
 #pragma once
 
 #include "non_copyable.hpp"
-#include "singleton_wrapper.hpp"
+#include "lazy_constructed.hpp"
 
 #include "render.hpp"
 #include "audio.hpp"
@@ -9,13 +9,10 @@
 #include "synth.hpp"
 
 struct App : non_copyable {
-    App() = default;
+    App();
     ~App() = default;
 
-    static App& instance() {
-        static App app;
-        return app;
-    }
+    void run();
 
     Render render;
     Audio audio;
@@ -23,4 +20,4 @@ struct App : non_copyable {
     Synth synth;
 };
 
-inline singleton_wrapper<App> app;
+inline lazy_constructed<App> app;
