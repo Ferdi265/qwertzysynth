@@ -71,7 +71,7 @@ void Synth::process_events() {
     }
 }
 
-constexpr adsr vol_envelope = ADSR(BPM, SAMPLE_RATE, 1./32, 1./4, 1, 1.2, 1);
+constexpr adsr vol_envelope = ADSR(BPM, SAMPLE_RATE, 1./32, 1./4, 3./4, 1.2, 1);
 int16_t Synth::sample_instrument(uint32_t t) {
     if (!n.has_value()) {
         return 0;
