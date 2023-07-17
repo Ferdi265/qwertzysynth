@@ -3,7 +3,7 @@
 #include "app.hpp"
 #include "util.hpp"
 
-constexpr bool QWERTUOSO = true;
+constexpr bool QWERTUOSO = false;
 constinit std::array<std::optional<note>, UCHAR_MAX + 1> Keyboard::note_mapping = []{
     std::array<std::optional<note>, UCHAR_MAX + 1> note_mapping = {};
 
