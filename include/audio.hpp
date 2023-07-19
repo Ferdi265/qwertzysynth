@@ -3,6 +3,9 @@
 #include <SDL.h>
 #include "non_copyable.hpp"
 
+constexpr uint32_t SAMPLE_RATE = 48000;
+constexpr uint32_t BUF_SIZE = 1024;
+
 struct Audio : non_copyable {
     Audio();
     ~Audio();

@@ -3,15 +3,13 @@
 #include <fmt/format.h>
 #include "app.hpp"
 
-constexpr uint32_t SAMPLE_RATE = 48000;
-
 Audio::Audio() {
     SDL_AudioSpec audio_config {
         .freq = SAMPLE_RATE,
         .format = AUDIO_S16SYS,
         .channels = 1,
         .silence = 0,
-        .samples = 1024,
+        .samples = BUF_SIZE,
         .padding = 0,
         .size = 0,
         .callback = &Audio::update,

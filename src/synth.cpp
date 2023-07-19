@@ -6,8 +6,6 @@
 #include "libsynth.hpp"
 
 constexpr static uint32_t BPM = 120;
-constexpr static uint32_t SAMPLE_RATE = 48000;
-constexpr static uint32_t BUF_SIZE = 1024;
 
 Synth::Synth() {
     t_sdl_batch = SDL_GetTicks();
