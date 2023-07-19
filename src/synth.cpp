@@ -7,6 +7,7 @@
 
 constexpr static uint32_t BPM = 120;
 constexpr static uint32_t SAMPLE_RATE = 48000;
+constexpr static uint32_t BUF_SIZE = 1024;
 
 Synth::Synth() {
     t_sdl_batch = SDL_GetTicks();
@@ -45,9 +46,12 @@ void Synth::update(std::span<int16_t> buffer) {
 // --- private ---
 
 uint32_t Synth::event_time(uint32_t timestamp) const {
-    std::chrono::milliseconds t_diff = std::chrono::milliseconds(timestamp - t_sdl_batch.load());
-    assert(t_diff.count() >= 0);
-    uint32_t t = std::chrono::duration_cast<std::chrono::nanoseconds>(t_diff).count() * SAMPLE_RATE / 1'000'000;
+    uint32_t diff = timestamp - t_sdl_batch.load();
+    uint32_t t = diff * SAMPLE_RATE / 1000;
+    if (t >= BUF_SIZE) {
+        fmt::print("warn: buffer exceeded by {} samples\n", t - BUF_SIZE - 1);
+        t = BUF_SIZE - 1;
+    }
     return t;
 }
 
@@ -85,7 +89,7 @@ void Synth::process_events() {
             e = events.pop();
         }
 
-        if (e && t_batch + e->t >= t_sample) {
+        if (e && t_sample >= t_batch + e->t) {
             if (e->hit) {
                 do_hit(e->n);
             } else {
