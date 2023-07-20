@@ -5,7 +5,7 @@ struct Render : non_copyable {
     Render();
     ~Render();
 
-    void update();
+    void render();
 
     SDL_Window * window;
     SDL_Renderer * renderer;

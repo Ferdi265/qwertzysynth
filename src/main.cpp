@@ -6,6 +6,7 @@
 
 App::App(CLIArgs args) :
     render(),
+    imgui(),
     audio(),
     keyboard(args),
     synth()
@@ -15,6 +16,8 @@ void App::run() {
     while (true) {
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
+            app->imgui.update(e);
+
             switch (e.type) {
                 CASE(SDL_QUIT) {
                     return;
@@ -32,7 +35,7 @@ void App::run() {
             }
         }
 
-        app->render.update();
+        app->render.render();
     }
 }
 

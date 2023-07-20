@@ -6,6 +6,9 @@ project(sdl-musictest CXX)
 find_package(SDL2 REQUIRED)
 find_package(fmt REQUIRED)
 
+# local dependencies
+add_subdirectory(lib)
+
 # project
 add_executable(musictest)
 
@@ -25,4 +28,4 @@ add_subdirectory(embed)
 
 # libraries
 target_include_directories(musictest PRIVATE ${SDL2_INCLUDE_DIRS})
-target_link_libraries(musictest PRIVATE ${SDL2_LIBRARIES} fmt::fmt)
+target_link_libraries(musictest PRIVATE ${SDL2_LIBRARIES} fmt::fmt imgui cxx_lockfree_ring_queue)

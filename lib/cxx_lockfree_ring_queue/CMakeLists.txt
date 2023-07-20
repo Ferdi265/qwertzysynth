@@ -1,0 +1,4 @@
+project(cxx_lockfree_ring_queue CXX)
+
+add_library(cxx_lockfree_ring_queue INTERFACE)
+target_include_directories(cxx_lockfree_ring_queue INTERFACE .)

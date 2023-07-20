@@ -4,6 +4,7 @@
 #include "lazy_constructed.hpp"
 
 #include "render.hpp"
+#include "imgui.hpp"
 #include "audio.hpp"
 #include "keyboard.hpp"
 #include "synth.hpp"
@@ -15,6 +16,7 @@ struct App : non_copyable {
     void run();
 
     Render render;
+    Imgui imgui;
     Audio audio;
     Keyboard keyboard;
     Synth synth;
