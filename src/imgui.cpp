@@ -18,14 +18,17 @@ Imgui::~Imgui() {
     ImGui::DestroyContext();
 }
 
+void Imgui::frame() {
+    ImGui_ImplSDLRenderer2_NewFrame();
+    ImGui_ImplSDL2_NewFrame();
+    ImGui::NewFrame();
+}
+
 void Imgui::update(SDL_Event e) {
     ImGui_ImplSDL2_ProcessEvent(&e);
 }
 
 void Imgui::render() {
-    ImGui_ImplSDLRenderer2_NewFrame();
-    ImGui_ImplSDL2_NewFrame();
-    ImGui::NewFrame();
     ImGui::ShowDemoWindow();
 
     ImGui::Render();

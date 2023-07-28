@@ -77,6 +77,12 @@ void Synth::do_off() {
     t_release = -1U;
 }
 
+// TODO: more streamlined event handling with less checks
+// while i < bufsiz:
+// - get event
+// - if no event or event in future:
+//   sample instrument min(bufsiz - i, (te - t)) times
+// - process event
 void Synth::process_events() {
     while (true) {
         // get at least one event if no event pending
@@ -111,7 +117,7 @@ int16_t Synth::sample_instrument() {
     }
 
     double level = vol_envelope.level(hit_time(), release_time());
-    int16_t sample = triangle{ note_to_samples(*n, SAMPLE_RATE), 0, level }.level(hit_time()) * (1 << 12);
+    int16_t sample = triangle{ note_to_samples(*n, SAMPLE_RATE), 0.2, level }.level(hit_time()) * (1 << 12);
 
     if (vol_envelope.release_done(release_time())) {
         do_off();

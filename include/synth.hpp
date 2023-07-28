@@ -20,7 +20,6 @@ struct Synth : non_copyable {
     Synth();
     ~Synth() = default;
 
-    // public functions
     void hit(note n, uint32_t timestamp);
     void release(note n, uint32_t timestamp);
     void update(std::span<int16_t> buffer);

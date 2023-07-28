@@ -14,6 +14,8 @@ App::App(CLIArgs args) :
 
 void App::run() {
     while (true) {
+        app->imgui.frame();
+
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
             app->imgui.update(e);

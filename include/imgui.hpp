@@ -5,6 +5,7 @@ struct Imgui : non_copyable {
     Imgui();
     ~Imgui();
 
+    void frame();
     void update(SDL_Event e);
     void render();
 };
