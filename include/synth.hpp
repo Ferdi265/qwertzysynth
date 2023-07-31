@@ -32,7 +32,7 @@ private:
     void do_hit(note nt);
     void do_release();
     void do_off();
-    void process_events();
+    size_t process_events(size_t rest);
     int16_t sample_instrument();
 
     lockfree_ring_queue<SynthEvent, 32> events;

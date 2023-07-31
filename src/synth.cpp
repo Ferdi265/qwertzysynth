@@ -35,9 +35,11 @@ void Synth::update(std::span<int16_t> buffer) {
     t_sdl_batch = SDL_GetTicks();
     t_batch = t_sample;
 
-    for (size_t i = 0; i < buffer.size(); i++, t_sample++) {
-        process_events();
-        buffer[i] = sample_instrument();
+    for (size_t i = 0; i < buffer.size(); ) {
+        size_t max = i + process_events(buffer.size() - i);
+        for (; i < max; i++, t_sample++) {
+            buffer[i] = sample_instrument();
+        }
     }
 }
 
@@ -77,36 +79,34 @@ void Synth::do_off() {
     t_release = -1U;
 }
 
-// TODO: more streamlined event handling with less checks
-// while i < bufsiz:
-// - get event
-// - if no event or event in future:
-//   sample instrument min(bufsiz - i, (te - t)) times
-// - process event
-void Synth::process_events() {
-    while (true) {
-        // get at least one event if no event pending
-        if (!e) e = events.pop();
-
-        // skip all release events for irrelevant notes
-        while (e && !e->hit && e->n != n) {
-            e = events.pop();
+size_t Synth::process_events(size_t rest) {
+    if (e) {
+        assert(t_batch + e->t >= t_sample && "event handled too early");
+        assert(t_batch + e->t <= t_sample && "event handled too late");
+        if (e->hit) {
+            do_hit(e->n);
+        } else {
+            do_release();
         }
+    }
 
-        if (e && t_sample >= t_batch + e->t) {
-            if (e->hit) {
-                do_hit(e->n);
-            } else {
-                do_release();
-            }
-
-            // get another event
-            e = std::nullopt;
-            continue;
-        }
-
-        // current event will trigger later
-        break;
+    // get next event
+    e = events.pop();
+    if (!e) {
+        // no event, skip until end of buffer
+        return rest;
+    } else if (!e->hit && e->n != n) {
+        // skip release events for irrelevant notes
+        e = std::nullopt;
+        return 0;
+    } else if (t_batch + e->t <= t_sample) {
+        // event is now, handle immediately
+        assert(t_batch + e->t == t_sample && "event is in the past");
+        return 0;
+    } else {
+        // event is in the future, handle in n samples
+        assert(t_batch + e->t - t_sample <= rest && "t is past end of buffer");
+        return t_batch + e->t - t_sample;
     }
 }
 
