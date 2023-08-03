@@ -2,6 +2,7 @@
 #include <fmt/format.h>
 
 #include "app.hpp"
+#include "util.hpp"
 
 #include "libsynth.hpp"
 
@@ -49,7 +50,7 @@ uint32_t Synth::event_time(uint32_t timestamp) const {
     uint32_t diff = timestamp - t_sdl_batch.load();
     uint32_t t = diff * SAMPLE_RATE / 1000;
     if (t >= BUF_SIZE) {
-        fmt::print("warn: buffer exceeded by {} samples\n", t - BUF_SIZE - 1);
+        warn_assert(true, "buffer exceeded by {} samples\n", t - BUF_SIZE - 1);
         t = BUF_SIZE - 1;
     }
     return t;
@@ -81,8 +82,8 @@ void Synth::do_off() {
 
 size_t Synth::process_events(size_t rest) {
     if (e) {
-        assert(t_batch + e->t >= t_sample && "event handled too early");
-        assert(t_batch + e->t <= t_sample && "event handled too late");
+        warn_assert(t_batch + e->t >= t_sample, "event handled too early\n");
+        warn_assert(t_batch + e->t <= t_sample, "event handled too late\n");
         if (e->hit) {
             do_hit(e->n);
         } else {
@@ -101,11 +102,11 @@ size_t Synth::process_events(size_t rest) {
         return 0;
     } else if (t_batch + e->t <= t_sample) {
         // event is now, handle immediately
-        assert(t_batch + e->t == t_sample && "event is in the past");
+        warn_assert(t_batch + e->t == t_sample, "event is in the past\n");
         return 0;
     } else {
         // event is in the future, handle in n samples
-        assert(t_batch + e->t - t_sample <= rest && "t is past end of buffer");
+        warn_assert(t_batch + e->t - t_sample <= rest, "t is past end of buffer\n");
         return t_batch + e->t - t_sample;
     }
 }
