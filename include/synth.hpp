@@ -43,6 +43,7 @@ private:
 
     lockfree_ring_queue<SynthEvent, 32> events;
     std::atomic<SynthTime> t_batch;
+    static_assert(std::atomic<SynthTime>::is_always_lock_free, "accessing t_batch is not lock free");
 
     uint32_t t_sample = 0;
     uint32_t t_hit = -1U;
