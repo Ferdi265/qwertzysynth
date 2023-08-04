@@ -10,6 +10,11 @@
 #include "note.hpp"
 #include "lockfree_ring_queue.hpp"
 
+struct SynthTime {
+    uint32_t t;
+    uint32_t t_sdl;
+};
+
 struct SynthEvent {
     uint32_t t;
     note n;
@@ -36,9 +41,8 @@ private:
     int16_t sample_instrument();
 
     lockfree_ring_queue<SynthEvent, 32> events;
-    std::atomic<uint32_t> t_sdl_batch;
+    std::atomic<SynthTime> t_batch;
 
-    uint32_t t_batch = 0;
     uint32_t t_sample = 0;
     uint32_t t_hit = -1U;
     uint32_t t_release = -1U;

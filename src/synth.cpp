@@ -9,7 +9,7 @@
 constexpr static uint32_t BPM = 120;
 
 Synth::Synth() {
-    t_sdl_batch = SDL_GetTicks();
+    t_batch = { 0, SDL_GetTicks() };
 }
 
 void Synth::hit(note n, uint32_t timestamp) {
@@ -33,8 +33,7 @@ void Synth::release(note n, uint32_t timestamp) {
 }
 
 void Synth::update(std::span<int16_t> buffer) {
-    t_sdl_batch = SDL_GetTicks();
-    t_batch = t_sample;
+    t_batch = { t_sample, SDL_GetTicks() };
 
     for (size_t i = 0; i < buffer.size(); ) {
         size_t max = i + process_events(buffer.size() - i);
@@ -46,14 +45,12 @@ void Synth::update(std::span<int16_t> buffer) {
 
 // --- private ---
 
-uint32_t Synth::event_time(uint32_t timestamp) const {
-    uint32_t diff = timestamp - t_sdl_batch.load();
-    uint32_t t = diff * SAMPLE_RATE / 1000;
-    if (t >= BUF_SIZE) {
-        warn_assert(true, "buffer exceeded by {} samples\n", t - BUF_SIZE - 1);
-        t = BUF_SIZE - 1;
-    }
-    return t;
+uint32_t Synth::event_time(uint32_t t_sdl) const {
+    SynthTime base = t_batch.load();
+    uint32_t t_sdl_diff = t_sdl - base.t_sdl;
+    uint32_t t_diff = t_sdl_diff * SAMPLE_RATE / 1000;
+    // place all events one sample buffer in the future
+    return t_diff + base.t + BUF_SIZE;
 }
 
 uint32_t Synth::hit_time() const {
@@ -82,8 +79,8 @@ void Synth::do_off() {
 
 size_t Synth::process_events(size_t rest) {
     if (e) {
-        warn_assert(t_batch + e->t >= t_sample, "event handled too early\n");
-        warn_assert(t_batch + e->t <= t_sample, "event handled too late\n");
+        warn_on(e->t < t_sample, "event handled {} samples too early\n", t_sample - e->t);
+        warn_on(e->t > t_sample, "event handled {} samples too late\n", e->t - t_sample);
         if (e->hit) {
             do_hit(e->n);
         } else {
@@ -100,14 +97,16 @@ size_t Synth::process_events(size_t rest) {
         // skip release events for irrelevant notes
         e = std::nullopt;
         return 0;
-    } else if (t_batch + e->t <= t_sample) {
+    } else if (e->t <= t_sample) {
         // event is now, handle immediately
-        warn_assert(t_batch + e->t == t_sample, "event is in the past\n");
+        warn_on(e->t < t_sample, "event is {} samples in the past\n", t_sample - e->t);
         return 0;
-    } else {
+    } else if (e->t - t_sample <= rest) {
         // event is in the future, handle in n samples
-        warn_assert(t_batch + e->t - t_sample <= rest, "t is past end of buffer\n");
-        return t_batch + e->t - t_sample;
+        return e->t - t_sample;
+    } else {
+        // event is not in this buffer, handle next audio buffer
+        return rest;
     }
 }
 
