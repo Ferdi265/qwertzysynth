@@ -24,10 +24,11 @@ void Synth::update(std::span<int16_t> buffer) {
     t_batch = { t_sample, SDL_GetTicks() };
 
     for (size_t i = 0; i < buffer.size(); ) {
-        size_t max = i + process_events(buffer.size() - i);
-        for (; i < max; i++, t_sample++) {
+        size_t rest = time_until_event(buffer.size() - i);
+        for (; rest-- > 0; i++, t_sample++) {
             buffer[i] = sample_instrument();
         }
+        handle_event();
     }
 }
 
@@ -38,7 +39,6 @@ uint32_t Synth::event_time(uint32_t t_sdl) const {
     uint32_t t_sdl_diff = t_sdl - base.t_sdl;
     uint32_t t_diff = t_sdl_diff * SAMPLE_RATE / 1000;
     // place all events one buffer size in the future to ensure correct timing
-    warn_on(t_diff > BUF_SIZE, "event is more than one sample buffer in the future\n");
     return t_diff + base.t + BUF_SIZE;
 }
 
@@ -66,20 +66,12 @@ void Synth::do_off() {
     t_release = -1U;
 }
 
-size_t Synth::process_events(size_t rest) {
-    if (e) {
-        int32_t diff = e->t - t_sample;
-        warn_on(diff < 0, "event handled {} samples too early\n", -diff);
-        warn_on(diff > 0, "event handled {} samples too late\n", diff);
-        if (e->hit) {
-            do_hit(e->n);
-        } else {
-            do_release();
-        }
+size_t Synth::time_until_event(size_t rest) {
+    if (!e) {
+        // get next event
+        e = events.pop();
     }
 
-    // get next event
-    e = events.pop();
     if (!e) {
         // no event, skip until end of buffer
         return rest;
@@ -91,9 +83,23 @@ size_t Synth::process_events(size_t rest) {
         // handle events in the past now
         // handle events in the future in n samples
         // handle events not in this buffer later
+        return std::clamp<int32_t>(e->t - t_sample, 0, rest);
+    }
+}
+
+void Synth::handle_event() {
+    if (e) {
         int32_t diff = e->t - t_sample;
-        warn_on(diff < 0, "event is {} samples in the past\n", -diff);
-        return std::clamp<int32_t>(diff, 0, rest);
+        warn_on(diff > 0, "event handled {} samples too early\n", diff);
+        warn_on(diff < 0, "event handled {} samples too late\n", -diff);
+
+        if (e->hit) {
+            do_hit(e->n);
+        } else {
+            do_release();
+        }
+
+        e = std::nullopt;
     }
 }
 
