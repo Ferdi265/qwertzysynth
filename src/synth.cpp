@@ -24,8 +24,8 @@ void Synth::update(std::span<int16_t> buffer) {
     t_batch = { t_sample, SDL_GetTicks() };
 
     for (size_t i = 0; i < buffer.size(); ) {
-        size_t rest = time_until_event(buffer.size() - i);
-        for (; rest-- > 0; i++, t_sample++) {
+        size_t max = i + time_until_event(buffer.size() - i);
+        for (; i < max; i++, t_sample++) {
             buffer[i] = sample_instrument();
         }
         handle_event();
