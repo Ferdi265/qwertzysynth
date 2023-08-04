@@ -83,14 +83,18 @@ size_t Synth::time_until_event(size_t rest) {
         // handle events in the past now
         // handle events in the future in n samples
         // handle events not in this buffer later
-        return std::clamp<int32_t>(e->t - t_sample, 0, rest);
+        int32_t diff = e->t - t_sample;
+        return std::clamp<int32_t>(diff, 0, rest);
     }
 }
 
 void Synth::handle_event() {
-    if (e) {
-        int32_t diff = e->t - t_sample;
-        warn_on(diff > 0, "event handled {} samples too early\n", diff);
+    if (!e) {
+        return;
+    }
+
+    int32_t diff = e->t - t_sample;
+    if (diff <= 0) {
         warn_on(diff < 0, "event handled {} samples too late\n", -diff);
 
         if (e->hit) {
