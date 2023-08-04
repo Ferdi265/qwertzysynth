@@ -12,24 +12,12 @@ Synth::Synth() {
     t_batch = { 0, SDL_GetTicks() };
 }
 
-void Synth::hit(note n, uint32_t timestamp) {
-    SynthEvent event = {
-        event_time(timestamp), n, true
-    };
-
-    if (!events.push(event)) {
-        fmt::print("error: failed to push synth hit event\n");
-    }
+void Synth::hit(note n, uint32_t t_sdl) {
+    warn_on(!events.push({ event_time(t_sdl), n, true }), "failed to push synth hit event\n");
 }
 
-void Synth::release(note n, uint32_t timestamp) {
-    SynthEvent event = {
-        event_time(timestamp), n, false
-    };
-
-    if (!events.push(event)) {
-        fmt::print("error: failed to push synth release event\n");
-    }
+void Synth::release(note n, uint32_t t_sdl) {
+    warn_on(!events.push({ event_time(t_sdl), n, false }), "failed to push synth release event\n");
 }
 
 void Synth::update(std::span<int16_t> buffer) {
@@ -49,7 +37,8 @@ uint32_t Synth::event_time(uint32_t t_sdl) const {
     SynthTime base = t_batch.load();
     uint32_t t_sdl_diff = t_sdl - base.t_sdl;
     uint32_t t_diff = t_sdl_diff * SAMPLE_RATE / 1000;
-    // place all events one sample buffer in the future
+    // place all events one buffer size in the future to ensure correct timing
+    warn_on(t_diff > BUF_SIZE, "event is more than one sample buffer in the future\n");
     return t_diff + base.t + BUF_SIZE;
 }
 
@@ -79,8 +68,9 @@ void Synth::do_off() {
 
 size_t Synth::process_events(size_t rest) {
     if (e) {
-        warn_on(e->t < t_sample, "event handled {} samples too early\n", t_sample - e->t);
-        warn_on(e->t > t_sample, "event handled {} samples too late\n", e->t - t_sample);
+        int32_t diff = e->t - t_sample;
+        warn_on(diff < 0, "event handled {} samples too early\n", -diff);
+        warn_on(diff > 0, "event handled {} samples too late\n", diff);
         if (e->hit) {
             do_hit(e->n);
         } else {
@@ -97,16 +87,13 @@ size_t Synth::process_events(size_t rest) {
         // skip release events for irrelevant notes
         e = std::nullopt;
         return 0;
-    } else if (e->t <= t_sample) {
-        // event is now, handle immediately
-        warn_on(e->t < t_sample, "event is {} samples in the past\n", t_sample - e->t);
-        return 0;
-    } else if (e->t - t_sample <= rest) {
-        // event is in the future, handle in n samples
-        return e->t - t_sample;
     } else {
-        // event is not in this buffer, handle next audio buffer
-        return rest;
+        // handle events in the past now
+        // handle events in the future in n samples
+        // handle events not in this buffer later
+        int32_t diff = e->t - t_sample;
+        warn_on(diff < 0, "event is {} samples in the past\n", -diff);
+        return std::clamp<int32_t>(diff, 0, rest);
     }
 }
 

@@ -25,12 +25,12 @@ struct Synth : non_copyable {
     Synth();
     ~Synth() = default;
 
-    void hit(note n, uint32_t timestamp);
-    void release(note n, uint32_t timestamp);
+    void hit(note n, uint32_t t_sdl);
+    void release(note n, uint32_t t_sdl);
     void update(std::span<int16_t> buffer);
 
 private:
-    uint32_t event_time(uint32_t timestamp) const;
+    uint32_t event_time(uint32_t t_sdl) const;
     uint32_t hit_time() const;
     uint32_t release_time() const;
 
