@@ -12,23 +12,35 @@ Synth::Synth() {
     t_batch = { 0, SDL_GetTicks() };
 }
 
-void Synth::hit(note n, uint32_t t_sdl) {
+void Synth::hit(Note n, uint32_t t_sdl) {
     warn_on(!events.push({ event_time(t_sdl), n, true }), "failed to push synth hit event\n");
 }
 
-void Synth::release(note n, uint32_t t_sdl) {
+void Synth::release(Note n, uint32_t t_sdl) {
     warn_on(!events.push({ event_time(t_sdl), n, false }), "failed to push synth release event\n");
 }
 
+static int same_event_ctr = 0;
 void Synth::update(std::span<int16_t> buffer) {
     t_batch = { t_sample, SDL_GetTicks() };
 
+    auto prev_e = e;
     for (size_t i = 0; i < buffer.size(); ) {
         size_t max = i + time_until_event(buffer.size() - i);
         for (; i < max; i++, t_sample++) {
             buffer[i] = sample_instrument();
         }
         handle_event();
+    }
+    auto next_e = e;
+
+    if (e && prev_e == next_e) {
+        same_event_ctr++;
+        warn_on(true, "same event {} since {} buffers (t = {}, {:.2f}s into the future)\n",
+            *e, same_event_ctr, t_sample, (e->t - t_sample) / double(SAMPLE_RATE)
+        );
+    } else {
+        same_event_ctr = 0;
     }
 }
 
@@ -50,7 +62,7 @@ uint32_t Synth::release_time() const {
     return t_release == -1U ? -1U : t_sample - t_release;
 }
 
-void Synth::do_hit(note nt) {
+void Synth::do_hit(Note nt) {
     n = nt;
     t_hit = t_sample;
     t_release = -1U;
@@ -95,6 +107,7 @@ void Synth::handle_event() {
 
     int32_t diff = e->t - t_sample;
     if (diff <= 0) {
+        fmt::print("info: {}\n", *e);
         warn_on(diff < 0, "event handled {} samples too late\n", -diff);
 
         if (e->hit) {

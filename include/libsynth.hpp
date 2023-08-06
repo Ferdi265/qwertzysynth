@@ -12,7 +12,7 @@ constexpr uint32_t freq_to_samples(double freq, uint32_t sample_rate) {
     return sample_rate / freq;
 }
 
-constexpr uint32_t note_to_samples(note n, uint32_t sample_rate) {
+constexpr uint32_t note_to_samples(Note n, uint32_t sample_rate) {
     return freq_to_samples(n.freq(), sample_rate);
 }
 

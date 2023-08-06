@@ -17,16 +17,35 @@ struct SynthTime {
 
 struct SynthEvent {
     uint32_t t;
-    note n;
+    Note n;
     bool hit;
+
+    constexpr friend auto operator<=>(SynthEvent, SynthEvent) = default;
+};
+
+template <>
+struct fmt::formatter<SynthEvent> {
+    template<typename ParseContext>
+    constexpr auto parse(ParseContext& ctx) {
+        return ctx.begin();
+    }
+
+    template<typename FormatContext>
+    auto format(const SynthEvent& e, FormatContext& ctx) {
+        return fmt::format_to(ctx.out(), "{} {} @ {}",
+            e.hit ? "hit" : "release",
+            e.n,
+            e.t
+        );
+    }
 };
 
 struct Synth : non_copyable {
     Synth();
     ~Synth() = default;
 
-    void hit(note n, uint32_t t_sdl);
-    void release(note n, uint32_t t_sdl);
+    void hit(Note n, uint32_t t_sdl);
+    void release(Note n, uint32_t t_sdl);
     void update(std::span<int16_t> buffer);
 
 private:
@@ -34,7 +53,7 @@ private:
     uint32_t hit_time() const;
     uint32_t release_time() const;
 
-    void do_hit(note nt);
+    void do_hit(Note nt);
     void do_release();
     void do_off();
     size_t time_until_event(size_t rest);
@@ -48,6 +67,6 @@ private:
     uint32_t t_sample = 0;
     uint32_t t_hit = -1U;
     uint32_t t_release = -1U;
-    std::optional<note> n;
+    std::optional<Note> n;
     std::optional<SynthEvent> e;
 };

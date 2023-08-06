@@ -14,6 +14,6 @@ struct Keyboard : non_copyable {
 
     void update(SDL_Event e);
 
-    std::array<std::optional<note>, UCHAR_MAX + 1> note_mapping = {};
+    std::array<std::optional<Note>, UCHAR_MAX + 1> note_mapping = {};
     int octave = 0;
 };

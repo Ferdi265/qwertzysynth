@@ -1,6 +1,9 @@
 #pragma once
 
-enum struct note_name {
+#include <compare>
+#include <fmt/core.h>
+
+enum struct NoteName {
     C = 0,
     Cis = 1,
     Des = 1,
@@ -19,13 +22,13 @@ enum struct note_name {
     Bes = 10,
     B = 11
 };
-using enum note_name;
+using enum NoteName;
 
 constexpr float TET_STEP = 1.0594630943592953f;
 
-struct note {
-    explicit constexpr note(int n) : n(n) {}
-    constexpr note(note_name n) : n((int)n) {}
+struct Note {
+    explicit constexpr Note(int n) : n(n) {}
+    constexpr Note(NoteName n) : n((int)n) {}
 
     constexpr float freq() const noexcept {
         float f = 440;
@@ -51,18 +54,77 @@ struct note {
         return f;
     }
 
-    constexpr bool operator==(note o) const noexcept {
-        return n == o.n;
+    constexpr friend auto operator<=>(Note, Note) = default;
+
+    constexpr NoteName name() const noexcept {
+        int n = this->n;
+        if (n > 0) {
+            while (n >= 12) {
+                n -= 12;
+            }
+        } else {
+            while (n < 0) {
+                n += 12;
+            }
+        }
+
+        return NoteName(n);
     }
 
-    constexpr bool operator!=(note o) const noexcept {
-        return n != o.n;
+    constexpr int octave() const noexcept {
+        int n = this->n;
+        int octave = 4;
+        if (n > 0) {
+            while (n >= 12) {
+                octave++;
+                n -= 12;
+            }
+        } else {
+            while (n < 0) {
+                octave--;
+                n += 12;
+            }
+        }
+
+        return octave;
     }
 
     int n;
 };
 
-constexpr note operator*(note_name nn, int octave) {
+template <>
+struct fmt::formatter<Note> {
+    template<typename ParseContext>
+    constexpr auto parse(ParseContext& ctx) {
+        return ctx.begin();
+    }
+
+    template<typename FormatContext>
+    auto format(const Note& nt, FormatContext& ctx) {
+        int octave = nt.octave();
+        NoteName n = nt.name();
+        return fmt::format_to(ctx.out(), "{}{}",
+            (
+                n == C ? "C-" :
+                n == Cis ? "C#" :
+                n == D ? "D-" :
+                n == Dis ? "D#" :
+                n == E ? "E-" :
+                n == F ? "F-" :
+                n == Fis ? "F#" :
+                n == G ? "G-" :
+                n == Gis ? "G#" :
+                n == A ? "A-" :
+                n == Ais ? "A#" :
+                n == B ? "B-" :
+                "?"
+            ),
+            octave
+        );
+    }
+};
+
+constexpr Note operator*(NoteName nn, int octave) {
         int n = (int)nn;
         octave -= 4;
 
@@ -78,12 +140,12 @@ constexpr note operator*(note_name nn, int octave) {
             }
         }
 
-        return note(n);
+        return Note(n);
 }
 
-constexpr note operator>>(note nn, int octave) {
-    return note_name(nn.n) * (octave+4);
+constexpr Note operator>>(Note nn, int octave) {
+    return NoteName(nn.n) * (octave+4);
 }
-constexpr note operator<<(note nn, int octave) {
-    return note_name(nn.n) * (4-octave);
+constexpr Note operator<<(Note nn, int octave) {
+    return NoteName(nn.n) * (4-octave);
 }
