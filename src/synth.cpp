@@ -48,8 +48,8 @@ void Synth::update(std::span<int16_t> buffer) {
 
 uint32_t Synth::event_time(uint32_t t_sdl) const {
     SynthTime base = t_batch.load();
-    uint32_t t_sdl_diff = t_sdl - base.t_sdl;
-    uint32_t t_diff = t_sdl_diff * SAMPLE_RATE / 1000;
+    int32_t t_sdl_diff = t_sdl - base.t_sdl;
+    int32_t t_diff = t_sdl_diff * SAMPLE_RATE / 1000;
     // place all events one buffer size in the future to ensure correct timing
     return t_diff + base.t + BUF_SIZE;
 }
