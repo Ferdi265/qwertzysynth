@@ -13,11 +13,13 @@ Synth::Synth() {
 }
 
 void Synth::hit(Note n, uint32_t t_sdl) {
-    warn_on(!events.push({ event_time(t_sdl), n, true }), "failed to push synth hit event\n");
+    SynthEvent e = { event_time(t_sdl), n, true };
+    warn_on(!events.push(e), "failed to push {} event\n", e);
 }
 
 void Synth::release(Note n, uint32_t t_sdl) {
-    warn_on(!events.push({ event_time(t_sdl), n, false }), "failed to push synth release event\n");
+    SynthEvent e = { event_time(t_sdl), n, false };
+    warn_on(!events.push(e), "failed to push {} event\n", e);
 }
 
 void Synth::update(std::span<int16_t> buffer) {
