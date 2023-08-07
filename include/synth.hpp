@@ -40,6 +40,21 @@ struct fmt::formatter<SynthEvent> {
     }
 };
 
+struct SynthTrack {
+    uint32_t t_hit = -1U;
+    uint32_t t_release = -1U;
+    std::optional<Note> n;
+
+    uint32_t hit_time(uint32_t t) const;
+    uint32_t release_time(uint32_t t) const;
+
+    void hit(uint32_t t, Note nt);
+    void release(uint32_t t);
+    void off();
+
+    int16_t sample(uint32_t t);
+};
+
 struct Synth : non_copyable {
     Synth();
     ~Synth() = default;
@@ -50,23 +65,19 @@ struct Synth : non_copyable {
 
 private:
     uint32_t event_time(uint32_t t_sdl) const;
-    uint32_t hit_time() const;
-    uint32_t release_time() const;
 
-    void do_hit(Note nt);
-    void do_release();
-    void do_off();
+    void hit();
+    void release();
+
     size_t time_until_event(size_t rest);
     void handle_event();
-    int16_t sample_instrument();
+    int16_t sample();
 
     lockfree_ring_queue<SynthEvent, 32> events;
     std::atomic<SynthTime> t_batch;
     static_assert(std::atomic<SynthTime>::is_always_lock_free, "accessing t_batch is not lock free");
 
     uint32_t t_sample = 0;
-    uint32_t t_hit = -1U;
-    uint32_t t_release = -1U;
-    std::optional<Note> n;
     std::optional<SynthEvent> e;
+    std::array<SynthTrack, 1> tracks;
 };

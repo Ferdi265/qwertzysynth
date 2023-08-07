@@ -8,6 +8,8 @@
 
 constexpr static uint32_t BPM = 120;
 
+// --- Synth public ---
+
 Synth::Synth() {
     t_batch = { 0, SDL_GetTicks() };
 }
@@ -28,44 +30,46 @@ void Synth::update(std::span<int16_t> buffer) {
     for (size_t i = 0; i < buffer.size(); ) {
         size_t max = i + time_until_event(buffer.size() - i);
         for (; i < max; i++, t_sample++) {
-            buffer[i] = sample_instrument();
+            buffer[i] = sample();
         }
         handle_event();
     }
 }
 
-// --- private ---
+// --- Synth private ---
 
 uint32_t Synth::event_time(uint32_t t_sdl) const {
     SynthTime base = t_batch.load();
     int32_t t_sdl_diff = t_sdl - base.t_sdl;
     int32_t t_diff = t_sdl_diff * int32_t(SAMPLE_RATE) / 1000;
     // place all events one buffer size in the future to ensure correct timing
-    return t_diff + base.t + BUF_SIZE;
+    int32_t t = base.t + BUF_SIZE + t_diff;
+    warn_on(t_sdl_diff < 0, "calculating sample timing for event in the past, base.t = {}, t = {}\n",
+        base.t, t
+    );
+    return t;
 }
 
-uint32_t Synth::hit_time() const {
-    return t_hit == -1U ? -1U : t_sample - t_hit;
+void Synth::hit() {
+    SynthTrack* hit_track = &tracks[0];
+    for (SynthTrack& track : tracks) {
+        if (track.n == e->n || !track.n) {
+            hit_track = &track;
+            break;
+        } else if (track.t_hit <= hit_track->t_hit) {
+            hit_track = &track;
+        }
+    }
+
+    hit_track->hit(t_sample, e->n);
 }
 
-uint32_t Synth::release_time() const {
-    return t_release == -1U ? -1U : t_sample - t_release;
-}
-
-void Synth::do_hit(Note nt) {
-    n = nt;
-    t_hit = t_sample;
-    t_release = -1U;
-}
-
-void Synth::do_release() {
-    t_release = t_sample;
-}
-
-void Synth::do_off() {
-    n = std::nullopt;
-    t_hit = -1U;
-    t_release = -1U;
+void Synth::release() {
+    for (SynthTrack& track : tracks) {
+        if (track.n == e->n) {
+            track.release(t_sample);
+        }
+    }
 }
 
 size_t Synth::time_until_event(size_t rest) {
@@ -77,10 +81,6 @@ size_t Synth::time_until_event(size_t rest) {
     if (!e) {
         // no event, skip until end of buffer
         return rest;
-    } else if (!e->hit && e->n != n) {
-        // skip release events for irrelevant notes
-        e = std::nullopt;
-        return 0;
     } else {
         // handle events in the past now
         // handle events in the future in n samples
@@ -101,26 +101,61 @@ void Synth::handle_event() {
         warn_on(diff < 0, "event handled {} samples too late\n", -diff);
 
         if (e->hit) {
-            do_hit(e->n);
+            hit();
         } else {
-            do_release();
+            release();
         }
 
         e = std::nullopt;
     }
 }
 
+int16_t Synth::sample() {
+    int16_t s = 0;
+    for (SynthTrack& track : tracks) {
+        s += track.sample(t_sample);
+    }
+
+    return s;
+}
+
+// --- SynthTrack ---
+
+void SynthTrack::hit(uint32_t t, Note nt) {
+    n = nt;
+    t_hit = t;
+    t_release = -1U;
+}
+
+void SynthTrack::release(uint32_t t) {
+    t_release = t;
+}
+
+void SynthTrack::off() {
+    n = std::nullopt;
+    t_hit = -1U;
+    t_release = -1U;
+}
+
+uint32_t SynthTrack::hit_time(uint32_t t) const {
+    return t_hit == -1U ? -1U : t - t_hit;
+}
+
+uint32_t SynthTrack::release_time(uint32_t t) const {
+    return t_release == -1U ? -1U : t - t_release;
+}
+
 constexpr adsr vol_envelope = ADSR(BPM, SAMPLE_RATE, 1./32, 1./4, 3./4, 1.2, 1);
-int16_t Synth::sample_instrument() {
+int16_t SynthTrack::sample(uint32_t t) {
     if (!n.has_value()) {
         return 0;
     }
 
-    double level = vol_envelope.level(hit_time(), release_time());
-    int16_t sample = triangle{ note_to_samples(*n, SAMPLE_RATE), 0.2, level }.level(hit_time()) * (1 << 12);
+    double level = vol_envelope.level(hit_time(t), release_time(t));
+    int16_t sample = triangle{ note_to_samples(*n, SAMPLE_RATE), 0.2, level }.level(hit_time(t)) * (1 << 12);
 
-    if (vol_envelope.release_done(release_time())) {
-        do_off();
+    if (vol_envelope.release_done(release_time(t))) {
+        off();
     }
 
     return sample;
