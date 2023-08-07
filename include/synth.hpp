@@ -33,7 +33,7 @@ struct fmt::formatter<SynthEvent> {
     template<typename FormatContext>
     auto format(const SynthEvent& e, FormatContext& ctx) {
         return fmt::format_to(ctx.out(), "{} {} @ {}",
-            e.hit ? "hit" : "release",
+            e.hit ? "hit" : "rel",
             e.n,
             e.t
         );
