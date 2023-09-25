@@ -149,3 +149,9 @@ constexpr Note operator>>(Note nn, int octave) {
 constexpr Note operator<<(Note nn, int octave) {
     return NoteName(nn.n) * (4-octave);
 }
+constexpr Note operator+(Note nn, int i) {
+    return Note(nn.n + i);
+}
+constexpr Note operator-(Note nn, int i) {
+    return Note(nn.n - i);
+}
