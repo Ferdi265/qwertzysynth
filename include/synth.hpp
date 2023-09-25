@@ -9,6 +9,7 @@
 #include "non_copyable.hpp"
 #include "note.hpp"
 #include "lockfree_ring_queue.hpp"
+#include "cli.hpp"
 
 struct SynthTime {
     uint32_t t;
@@ -52,11 +53,11 @@ struct SynthTrack {
     void release(uint32_t t);
     void off();
 
-    int16_t sample(uint32_t t);
+    int16_t sample(uint32_t t, int transpose);
 };
 
 struct Synth : non_copyable {
-    Synth();
+    Synth(CLIArgs args);
     ~Synth() = default;
 
     void hit(Note n, uint32_t t_sdl);
@@ -77,6 +78,7 @@ private:
     std::atomic<SynthTime> t_batch;
     static_assert(std::atomic<SynthTime>::is_always_lock_free, "accessing t_batch is not lock free");
 
+    int transpose = 0;
     uint32_t t_sample = 0;
     std::optional<SynthEvent> e;
     std::array<SynthTrack, 1> tracks;

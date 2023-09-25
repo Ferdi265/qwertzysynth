@@ -9,7 +9,7 @@ App::App(CLIArgs args) :
     imgui(),
     audio(),
     keyboard(args),
-    synth()
+    synth(args)
 {}
 
 void App::run() {

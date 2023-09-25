@@ -10,7 +10,8 @@ constexpr static uint32_t BPM = 120;
 
 // --- Synth public ---
 
-Synth::Synth() {
+Synth::Synth(CLIArgs args) {
+    transpose = args.transpose;
     t_batch = { 0, SDL_GetTicks() };
 }
 
@@ -113,7 +114,7 @@ void Synth::handle_event() {
 int16_t Synth::sample() {
     int16_t s = 0;
     for (SynthTrack& track : tracks) {
-        s += track.sample(t_sample);
+        s += track.sample(t_sample, transpose);
     }
 
     return s;
@@ -146,13 +147,13 @@ uint32_t SynthTrack::release_time(uint32_t t) const {
 }
 
 constexpr adsr vol_envelope = ADSR(BPM, SAMPLE_RATE, 1./32, 1./4, 3./4, 1.2, 1);
-int16_t SynthTrack::sample(uint32_t t) {
+int16_t SynthTrack::sample(uint32_t t, int transpose) {
     if (!n.has_value()) {
         return 0;
     }
 
     double level = vol_envelope.level(hit_time(t), release_time(t));
-    int16_t sample = triangle{ note_to_samples(*n, SAMPLE_RATE), 0.2, level }.level(hit_time(t)) * (1 << 12);
+    int16_t sample = triangle{ note_to_samples(*n + transpose, SAMPLE_RATE), 0.2, level }.level(hit_time(t)) * (1 << 12);
 
     if (vol_envelope.release_done(release_time(t))) {
         off();

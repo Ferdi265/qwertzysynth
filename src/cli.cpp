@@ -1,5 +1,6 @@
 #include <string_view>
 #include <fmt/format.h>
+#include <charconv>
 #include "cli.hpp"
 
 using namespace std::string_view_literals;
@@ -22,7 +23,7 @@ CLIArgs parse_args(int argc, char ** argv) {
         char * arg = argv[1];
         skip_arg();
 
-        if (opt == "--layout"sv) {
+        if (opt == "-l"sv || opt == "--layout"sv) {
             if (arg == nullptr || arg[0] == '-') {
                 error("error: option --layout expects an argument\n");
                 continue;
@@ -37,6 +38,18 @@ CLIArgs parse_args(int argc, char ** argv) {
                 args.kb_layout = KeyboardLayout::BGriff;
             } else {
                 error("error: invalid keyboard layout '{}'\n", arg);
+            }
+        } else if (opt == "-t"sv || opt == "--transpose"sv) {
+            if (arg == nullptr) {
+                error("error: option --transpose expects an argument\n");
+                continue;
+            }
+            skip_arg();
+
+            auto [ptr, ec] = std::from_chars(arg, arg + strlen(arg), args.transpose);
+            if (ec != std::errc()) {
+                error("error: invalid transposition '{}'\n", arg);
+                continue;
             }
         } else if (opt == "--"sv) {
             break;

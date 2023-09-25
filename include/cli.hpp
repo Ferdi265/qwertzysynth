@@ -8,7 +8,8 @@ enum struct KeyboardLayout {
 };
 
 struct CLIArgs {
-    KeyboardLayout kb_layout = KeyboardLayout::Piano;
+    KeyboardLayout kb_layout = KeyboardLayout::Qwertuoso;
+    int transpose = 0;
 };
 
 CLIArgs parse_args(int argc, char ** argv);
