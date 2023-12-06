@@ -10,4 +10,9 @@ struct Piano : non_copyable {
     void hit(Note n);
     void release(Note n);
     void render();
+
+private:
+    static constexpr size_t KEY_WIDTH = 20;
+    static constexpr size_t KEY_HEIGHT = 120;
+    static constexpr size_t NUM_KEYS = 12 * 3 + 1;
 };
