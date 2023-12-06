@@ -13,6 +13,6 @@ struct Piano : non_copyable {
 
 private:
     static constexpr size_t KEY_WIDTH = 20;
-    static constexpr size_t KEY_HEIGHT = 120;
-    static constexpr size_t NUM_KEYS = 12 * 3 + 1;
+    static constexpr size_t KEY_HEIGHT = 100;
+    static constexpr size_t NUM_KEYS = 12 * 3;
 };

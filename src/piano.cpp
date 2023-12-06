@@ -18,10 +18,9 @@ void Piano::render() {
     auto has_halfstep = [](size_t key) { return (key % 12) == 4 || (key % 12) == 11; };
     auto draw_key = [&](ImVec2 a, ImVec2 b, ImU32 color) {
         draw->AddRectFilled(a, b, color, 0, ImDrawCornerFlags_All);
-        draw->AddRect(a, b + ImVec2(1, 1), IM_COL32_BLACK, 0, ImDrawCornerFlags_All);
+        draw->AddRect(a - ImVec2(1, 1), b + ImVec2(1, 1), IM_COL32(128, 128, 128, 255), 0, ImDrawCornerFlags_All);
     };
 
-    size_t width = 0;
     size_t x, key;
 
     // white keys
@@ -33,7 +32,6 @@ void Piano::render() {
         );
         key += has_halfstep(key) ? 1 : 2;
     }
-    width = std::max(width, x);
 
     // black keys
     for (x = 0, key = 0; key < NUM_KEYS; x++) {
@@ -46,8 +44,7 @@ void Piano::render() {
         }
         key += has_halfstep(key) ? 1 : 2;
     }
-    width = std::max(width, x);
 
-    ImGui::SetWindowSize(ImVec2(width * KEY_WIDTH + 16, KEY_HEIGHT + 36));
+    ImGui::SetWindowSize(ImVec2(x * KEY_WIDTH + 16, KEY_HEIGHT + 36));
     ImGui::End();
 }
