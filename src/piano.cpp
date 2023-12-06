@@ -2,16 +2,6 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 
-void Piano::hit(Note n) {
-    cur_note = n;
-}
-
-void Piano::release(Note n) {
-    if (cur_note && *cur_note == n) {
-        cur_note = std::nullopt;
-    }
-}
-
 void Piano::render() {
     bool show = true;
     ImGui::Begin("piano", &show, ImGuiWindowFlags_NoResize);
@@ -19,7 +9,10 @@ void Piano::render() {
     ImDrawList * draw = ImGui::GetWindowDrawList();
     ImVec2 top_left = ImGui::GetCursorScreenPos();
 
-    auto key_on = [&](int key) { return cur_note && cur_note->n == key; };
+    constexpr int MIN_KEY = Keyboard::MIN_KEY;
+    constexpr int NUM_KEYS = Keyboard::NUM_KEYS;
+
+    auto key_on = [&](int key) { return app->keyboard.cur_note && app->keyboard.cur_note->n == key; };
     auto has_halfstep = [](int key) { key -= MIN_KEY; return (key % 12) == 4 || (key % 12) == 11; };
     auto draw_key = [&](ImVec2 a, ImVec2 b, ImU32 color) {
         draw->AddRectFilled(a, b, color, 0, ImDrawCornerFlags_All);

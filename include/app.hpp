@@ -5,7 +5,7 @@
 
 #include "render.hpp"
 #include "imgui.hpp"
-#include "keyboard_input.hpp"
+#include "input.hpp"
 #include "keyboard.hpp"
 #include "piano.hpp"
 #include "accordeon.hpp"
@@ -21,9 +21,7 @@ struct App : non_copyable {
     // render
     Render render;
     Imgui imgui;
-
-    // input
-    KeyboardInput keyboard_input;
+    Input input;
 
     // routing
     Keyboard keyboard;

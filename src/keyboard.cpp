@@ -2,14 +2,14 @@
 
 void Keyboard::hit(Note n, int octave, uint32_t t_sdl) {
     app->synth.hit(n >> octave, t_sdl);
-    app->piano.hit(n);
-    app->accordeon.hit(n);
+    cur_note = n;
 }
 
 void Keyboard::release(Note n, int octave, uint32_t t_sdl) {
     app->synth.release(n >> octave, t_sdl);
-    app->piano.release(n);
-    app->accordeon.release(n);
+    if (cur_note && *cur_note == n) {
+        cur_note = std::nullopt;
+    }
 }
 
 void Keyboard::render() {
