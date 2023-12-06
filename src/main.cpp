@@ -31,12 +31,12 @@ void App::run() {
                 }
 
                 CASE(SDL_KEYDOWN) {
-                    app->keyboard_input.update(e);
+                    app->input.update(e);
                     break;
                 }
 
                 CASE(SDL_KEYUP) {
-                    app->keyboard_input.update(e);
+                    app->input.update(e);
                     break;
                 }
             }
