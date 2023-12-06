@@ -116,7 +116,7 @@ void KeyboardInput::update(SDL_Event e) {
 
             std::optional<Note> keynote = (size_t)keysym < note_mapping.size() ? note_mapping[(size_t)keysym] : std::nullopt;
             if (keynote) {
-                app->synth.hit(*keynote >> octave, e.key.timestamp);
+                app->keyboard.hit(*keynote, octave, e.key.timestamp);
             } else {
                 switch (keysym) {
                     CASE(SDLK_KP_PLUS) {
@@ -141,7 +141,7 @@ void KeyboardInput::update(SDL_Event e) {
 
             std::optional<Note> keynote = (size_t)keysym < note_mapping.size() ? note_mapping[(size_t)keysym] : std::nullopt;
             if (keynote) {
-                app->synth.release(*keynote >> octave, e.key.timestamp);
+                app->keyboard.release(*keynote, octave, e.key.timestamp);
             } else {
                 switch (keysym) {
                     DEFAULT() {

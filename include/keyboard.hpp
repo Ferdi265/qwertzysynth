@@ -7,7 +7,7 @@ struct Keyboard : non_copyable {
     Keyboard() = default;
     ~Keyboard() = default;
 
-    void hit(Note n, uint32_t t_sdl);
-    void release(Note n, uint32_t t_sdl);
+    void hit(Note n, int octave, uint32_t t_sdl);
+    void release(Note n, int octave, uint32_t t_sdl);
     void render();
 };
