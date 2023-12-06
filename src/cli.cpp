@@ -3,8 +3,6 @@
 #include <charconv>
 #include "cli.hpp"
 
-using namespace std::string_view_literals;
-
 CLIArgs parse_args(int argc, char ** argv) {
     CLIArgs args;
     bool fail = false;
@@ -19,39 +17,40 @@ CLIArgs parse_args(int argc, char ** argv) {
     }
 
     while (argv[0] != nullptr && argv[0][0] == '-') {
-        char * opt = argv[0];
-        char * arg = argv[1];
+        std::string_view opt = argv[0];
+        bool has_arg = argv[1] != nullptr;
+        std::string_view arg = has_arg ? argv[1] : "";
         skip_arg();
 
-        if (opt == "-l"sv || opt == "--layout"sv) {
-            if (arg == nullptr || arg[0] == '-') {
+        if (opt == "-l" || opt == "--layout") {
+            if (has_arg || arg[0] == '-') {
                 error("error: option --layout expects an argument\n");
                 continue;
             }
             skip_arg();
 
-            if (arg == "piano"sv || arg == "p"sv) {
+            if (arg == "piano" || arg == "p") {
                 args.kb_layout = KeyboardLayout::Piano;
-            } else if (arg == "c-griff"sv || arg == "cgriff"sv || arg == "c"sv) {
+            } else if (arg == "c-griff" || arg == "cgriff" || arg == "c") {
                 args.kb_layout = KeyboardLayout::CGriff;
-            } else if (arg == "b-griff"sv || arg == "bgriff"sv || arg == "b"sv || arg == "qwertuoso"sv || arg == "q"sv) {
+            } else if (arg == "b-griff" || arg == "bgriff" || arg == "b" || arg == "qwertuoso" || arg == "q") {
                 args.kb_layout = KeyboardLayout::BGriff;
             } else {
                 error("error: invalid keyboard layout '{}'\n", arg);
             }
-        } else if (opt == "-t"sv || opt == "--transpose"sv) {
-            if (arg == nullptr) {
+        } else if (opt == "-t" || opt == "--transpose") {
+            if (has_arg) {
                 error("error: option --transpose expects an argument\n");
                 continue;
             }
             skip_arg();
 
-            auto [ptr, ec] = std::from_chars(arg, arg + strlen(arg), args.transpose);
+            auto [ptr, ec] = std::from_chars(arg.begin(), arg.end(), args.transpose);
             if (ec != std::errc()) {
                 error("error: invalid transposition '{}'\n", arg);
                 continue;
             }
-        } else if (opt == "--"sv) {
+        } else if (opt == "--") {
             break;
         } else {
             error("error: invalid option '{}'\n", opt);
