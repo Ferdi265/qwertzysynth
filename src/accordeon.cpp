@@ -3,9 +3,13 @@
 #include <imgui.h>
 
 void Accordeon::hit(Note n) {
+    cur_note = n;
 }
 
 void Accordeon::release(Note n) {
+    if (cur_note && *cur_note == n) {
+        cur_note = std::nullopt;
+    }
 }
 
 void Accordeon::render() {
@@ -15,25 +19,26 @@ void Accordeon::render() {
     ImDrawList * draw = ImGui::GetWindowDrawList();
     ImVec2 top_left = ImGui::GetCursorScreenPos();
 
-    auto has_halfstep = [](size_t key) { return (key % 12) == 4 || (key % 12) == 11; };
+    auto key_on = [&](int key) { return cur_note && cur_note->n == key; };
+    auto has_halfstep = [](int key) { key -= MIN_KEY; return (key % 12) == 4 || (key % 12) == 11; };
     auto draw_key = [&](ImVec2 a, ImVec2 b, ImU32 color) {
         draw->AddRectFilled(a, b, color, 0, ImDrawCornerFlags_All);
         draw->AddRect(a - ImVec2(1, 1), b + ImVec2(1, 1), IM_COL32(128, 128, 128, 255), 0, ImDrawCornerFlags_All);
     };
 
-    size_t x, key;
+    int x, key;
 
-    for (x = 0, key = 0; key < NUM_KEYS;) {
+    for (x = 0, key = MIN_KEY; key < MIN_KEY + NUM_KEYS;) {
         draw_key(
             top_left + ImVec2(x * KEY_WIDTH / 3., (x % 3) * KEY_HEIGHT),
             top_left + ImVec2(x * KEY_WIDTH / 3. + KEY_WIDTH, (x % 3) * KEY_HEIGHT + KEY_HEIGHT),
-            IM_COL32_WHITE
+            key_on(key) ? IM_COL32(255, 0, 0, 255) : IM_COL32_WHITE
         );
         if (!has_halfstep(key) && key + 1 < NUM_KEYS) {
             draw_key(
                 top_left + ImVec2((x + 1) * KEY_WIDTH / 3., ((x + 1) % 3) * KEY_HEIGHT),
                 top_left + ImVec2((x + 1) * KEY_WIDTH / 3. + KEY_WIDTH, ((x + 1) % 3) * KEY_HEIGHT + KEY_HEIGHT),
-                IM_COL32_BLACK
+                key_on(key + 1) ? IM_COL32(255, 0, 0, 255) : IM_COL32_BLACK
             );
         }
         x += has_halfstep(key) ? 1 : 2;

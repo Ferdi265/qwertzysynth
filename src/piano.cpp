@@ -3,9 +3,13 @@
 #include <imgui.h>
 
 void Piano::hit(Note n) {
+    cur_note = n;
 }
 
 void Piano::release(Note n) {
+    if (cur_note && *cur_note == n) {
+        cur_note = std::nullopt;
+    }
 }
 
 void Piano::render() {
@@ -15,31 +19,32 @@ void Piano::render() {
     ImDrawList * draw = ImGui::GetWindowDrawList();
     ImVec2 top_left = ImGui::GetCursorScreenPos();
 
-    auto has_halfstep = [](size_t key) { return (key % 12) == 4 || (key % 12) == 11; };
+    auto key_on = [&](int key) { return cur_note && cur_note->n == key; };
+    auto has_halfstep = [](int key) { key -= MIN_KEY; return (key % 12) == 4 || (key % 12) == 11; };
     auto draw_key = [&](ImVec2 a, ImVec2 b, ImU32 color) {
         draw->AddRectFilled(a, b, color, 0, ImDrawCornerFlags_All);
         draw->AddRect(a - ImVec2(1, 1), b + ImVec2(1, 1), IM_COL32(128, 128, 128, 255), 0, ImDrawCornerFlags_All);
     };
 
-    size_t x, key;
+    int x, key;
 
     // white keys
-    for (x = 0, key = 0; key < NUM_KEYS; x++) {
+    for (x = 0, key = MIN_KEY; key < MIN_KEY + NUM_KEYS; x++) {
         draw_key(
             top_left + ImVec2(x * KEY_WIDTH, 0),
             top_left + ImVec2((x + 1) * KEY_WIDTH, KEY_HEIGHT),
-            IM_COL32_WHITE
+            key_on(key) ? IM_COL32(255, 0, 0, 255) : IM_COL32_WHITE
         );
         key += has_halfstep(key) ? 1 : 2;
     }
 
     // black keys
-    for (x = 0, key = 0; key < NUM_KEYS; x++) {
+    for (x = 0, key = MIN_KEY; key < MIN_KEY + NUM_KEYS; x++) {
         if (!has_halfstep(key) && key + 1 < NUM_KEYS) {
             draw_key(
                 top_left + ImVec2(x * KEY_WIDTH, 0) + ImVec2(KEY_WIDTH * 2 / 3., 0),
                 top_left + ImVec2((x + 1) * KEY_WIDTH, KEY_HEIGHT) + ImVec2(KEY_WIDTH * 1 / 3., KEY_HEIGHT * 1 / -4.),
-                IM_COL32_BLACK
+                key_on(key + 1) ? IM_COL32(255, 0, 0, 255) : IM_COL32_BLACK
             );
         }
         key += has_halfstep(key) ? 1 : 2;
