@@ -29,7 +29,7 @@ void Imgui::update(SDL_Event e) {
 }
 
 void Imgui::render() {
-    ImGui::ShowDemoWindow();
+    app->keyboard.render();
 
     ImGui::Render();
     ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());

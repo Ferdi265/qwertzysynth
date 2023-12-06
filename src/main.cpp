@@ -7,8 +7,13 @@
 App::App(CLIArgs args) :
     render(),
     imgui(),
+
+    keyboard_input(args),
+    keyboard(),
+    piano(),
+    accordeon(),
+
     audio(),
-    keyboard(args),
     synth(args)
 {}
 
@@ -26,12 +31,12 @@ void App::run() {
                 }
 
                 CASE(SDL_KEYDOWN) {
-                    app->keyboard.update(e);
+                    app->keyboard_input.update(e);
                     break;
                 }
 
                 CASE(SDL_KEYUP) {
-                    app->keyboard.update(e);
+                    app->keyboard_input.update(e);
                     break;
                 }
             }

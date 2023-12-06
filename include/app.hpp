@@ -5,8 +5,11 @@
 
 #include "render.hpp"
 #include "imgui.hpp"
-#include "audio.hpp"
+#include "keyboard_input.hpp"
 #include "keyboard.hpp"
+#include "piano.hpp"
+#include "accordeon.hpp"
+#include "audio.hpp"
 #include "synth.hpp"
 
 struct App : non_copyable {
@@ -15,10 +18,22 @@ struct App : non_copyable {
 
     void run();
 
+    // render
     Render render;
     Imgui imgui;
-    Audio audio;
+
+    // input
+    KeyboardInput keyboard_input;
+
+    // routing
     Keyboard keyboard;
+
+    // visualization
+    Piano piano;
+    Accordeon accordeon;
+
+    // music
+    Audio audio;
     Synth synth;
 };
 
