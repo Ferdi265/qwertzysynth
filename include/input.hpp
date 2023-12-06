@@ -8,9 +8,9 @@
 #include "note.hpp"
 #include "cli.hpp"
 
-struct KeyboardInput : non_copyable {
-    KeyboardInput(CLIArgs args);
-    ~KeyboardInput() = default;
+struct Input : non_copyable {
+    Input(CLIArgs args);
+    ~Input() = default;
 
     void update(SDL_Event e);
 

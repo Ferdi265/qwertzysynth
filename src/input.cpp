@@ -4,7 +4,7 @@
 #include "cli.hpp"
 #include "util.hpp"
 
-KeyboardInput::KeyboardInput(CLIArgs args) {
+Input::Input(CLIArgs args) {
     if (args.kb_layout == KeyboardLayout::Piano) {
         note_mapping['2'] = Cis*4;
         note_mapping['3'] = Dis*4;
@@ -105,7 +105,7 @@ KeyboardInput::KeyboardInput(CLIArgs args) {
     }
 }
 
-void KeyboardInput::update(SDL_Event e) {
+void Input::update(SDL_Event e) {
     switch (e.type) {
         CASE(SDL_KEYDOWN) {
             int keysym = e.key.keysym.sym;

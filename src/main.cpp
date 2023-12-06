@@ -7,8 +7,8 @@
 App::App(CLIArgs args) :
     render(),
     imgui(),
+    input(args),
 
-    keyboard_input(args),
     keyboard(),
     piano(),
     accordeon(),
