@@ -29,11 +29,13 @@ void Keyboard::release_key(int keysym, uint32_t t_sdl) {
 
 void Keyboard::render() {
     if (ImGui::Begin("settings", nullptr, ImGuiWindowFlags_NoResize)) {
-        ImGui::Text("Current Note: %s", cur_note ? fmt::format("{}", *cur_note).c_str() : "none");
+        ImGui::Text("Current Note:");
+        ImGui::SameLine(130);
+        ImGui::Text("%s", cur_note ? fmt::format("{}", *cur_note).c_str() : "none");
 
         size_t cur_layout = (size_t)app->args.kb_layout;
         ImGui::Text("Keyboard Layout:");
-        ImGui::SameLine();
+        ImGui::SameLine(130);
         if (ImGui::BeginCombo("##combo", KEYBOARD_LAYOUTS[cur_layout])) {
             for (size_t i = 0; i < std::size(KEYBOARD_LAYOUTS); i++) {
                 bool is_selected = cur_layout == i;
@@ -50,7 +52,7 @@ void Keyboard::render() {
         }
 
         ImGui::Text("Transpose:");
-        ImGui::SameLine();
+        ImGui::SameLine(130);
         ImGui::InputInt("", &app->args.transpose);
 
         ImGui::SetWindowSize(ImVec2(400, 100));
