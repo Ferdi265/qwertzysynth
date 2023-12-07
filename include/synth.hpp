@@ -57,7 +57,7 @@ struct SynthTrack {
 };
 
 struct Synth : non_copyable {
-    Synth(CLIArgs args);
+    Synth();
     ~Synth() = default;
 
     void hit(Note n, uint32_t t_sdl);
@@ -78,7 +78,6 @@ private:
     std::atomic<SynthTime> t_batch;
     static_assert(std::atomic<SynthTime>::is_always_lock_free, "accessing t_batch is not lock free");
 
-    int transpose = 0;
     uint32_t t_sample = 0;
     std::optional<SynthEvent> e;
     std::array<SynthTrack, 1> tracks;

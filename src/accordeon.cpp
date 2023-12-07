@@ -2,6 +2,72 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 
+const std::unordered_map<int, Note> Accordeon::KEY_MAP = [](){
+    std::unordered_map<int, Note> key_map;
+
+    key_map.emplace('1', C*3);
+    key_map.emplace('2', Dis*3);
+    key_map.emplace('3', Fis*3);
+    key_map.emplace('4', A*3);
+    key_map.emplace('5', C*4);
+    key_map.emplace('6', Dis*4);
+    key_map.emplace('7', Fis*4);
+    key_map.emplace('8', A*4);
+    key_map.emplace('9', C*5);
+    key_map.emplace('0', Dis*5);
+    key_map.emplace(0xdf /* ß */, Fis*5);
+    //key_map.emplace( /* ´ */, A*5);
+
+    key_map.emplace('q', Cis*3);
+    key_map.emplace('w', E*3);
+    key_map.emplace('e', G*3);
+    key_map.emplace('r', Ais*3);
+    key_map.emplace('t', Cis*4);
+    key_map.emplace('z', E*4);
+    key_map.emplace('u', G*4);
+    key_map.emplace('i', Ais*4);
+    key_map.emplace('o', Cis*5);
+    key_map.emplace('p', E*5);
+    key_map.emplace(0xfc /* 'ü' */, G*5);
+    key_map.emplace('+', Ais*5);
+
+    key_map.emplace('a', D*3);
+    key_map.emplace('s', F*3);
+    key_map.emplace('d', Gis*3);
+    key_map.emplace('f', B*3);
+    key_map.emplace('g', D*4);
+    key_map.emplace('h', F*4);
+    key_map.emplace('j', Gis*4);
+    key_map.emplace('k', B*4);
+    key_map.emplace('l', D*5);
+    key_map.emplace(0xf6 /* 'ö' */, F*5);
+    key_map.emplace(0xe4 /* 'ä' */, Gis*5);
+    key_map.emplace('#', B*5);
+
+    key_map.emplace('<', C*3);
+    key_map.emplace('y', Dis*3);
+    key_map.emplace('x', Fis*3);
+    key_map.emplace('c', A*3);
+    key_map.emplace('v', C*4);
+    key_map.emplace('b', Dis*4);
+    key_map.emplace('n', Fis*4);
+    key_map.emplace('m', A*4);
+    key_map.emplace(',', C*5);
+    key_map.emplace('.', Dis*5);
+    key_map.emplace('-', Fis*5);
+
+    return key_map;
+}();
+
+std::optional<Note> Accordeon::map_key(int keysym) {
+    auto it = KEY_MAP.find(keysym);
+    if (it ==  KEY_MAP.end()) {
+        return std::nullopt;
+    } else {
+        return it->second;
+    }
+}
+
 void Accordeon::render() {
     bool show = true;
     ImGui::Begin("accordeon", &show, ImGuiWindowFlags_NoResize);

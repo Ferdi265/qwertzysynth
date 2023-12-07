@@ -2,6 +2,64 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 
+const std::unordered_map<int, Note> Piano::KEY_MAP = [](){
+    std::unordered_map<int, Note> key_map;
+
+    key_map.emplace('2', Cis*4);
+    key_map.emplace('3', Dis*4);
+    key_map.emplace('5', Fis*4);
+    key_map.emplace('6', Gis*4);
+    key_map.emplace('7', Ais*4);
+    key_map.emplace('9', Cis*5);
+    key_map.emplace('0', Dis*5);
+    //key_map.emplace( /* ´ */, Fis*5);
+
+    key_map.emplace('q', C*4);
+    key_map.emplace('w', D*4);
+    key_map.emplace('e', E*4);
+    key_map.emplace('r', F*4);
+    key_map.emplace('t', G*4);
+    key_map.emplace('z', A*4);
+    key_map.emplace('u', B*4);
+    key_map.emplace('i', C*5);
+    key_map.emplace('o', D*5);
+    key_map.emplace('p', E*5);
+    key_map.emplace(0xfc /* 'ü' */, F*5);
+    key_map.emplace('+', G*5);
+
+    key_map.emplace('s', Cis*3);
+    key_map.emplace('d', Dis*3);
+    key_map.emplace('g', Fis*3);
+    key_map.emplace('h', Gis*3);
+    key_map.emplace('j', Ais*3);
+    key_map.emplace('l', Cis*4);
+    key_map.emplace(0xf6 /* ö */, Dis*4);
+    key_map.emplace('#', Fis*4);
+
+    key_map.emplace('<', B*2);
+    key_map.emplace('y', C*3);
+    key_map.emplace('x', D*3);
+    key_map.emplace('c', E*3);
+    key_map.emplace('v', F*3);
+    key_map.emplace('b', G*3);
+    key_map.emplace('n', A*3);
+    key_map.emplace('m', B*3);
+    key_map.emplace(',', C*4);
+    key_map.emplace('.', D*4);
+    key_map.emplace('-', E*4);
+
+    return key_map;
+}();
+
+std::optional<Note> Piano::map_key(int keysym) {
+    auto it = KEY_MAP.find(keysym);
+    if (it ==  KEY_MAP.end()) {
+        return std::nullopt;
+    } else {
+        return it->second;
+    }
+}
+
 void Piano::render() {
     bool show = true;
     ImGui::Begin("piano", &show, ImGuiWindowFlags_NoResize);

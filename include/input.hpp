@@ -9,11 +9,8 @@
 #include "cli.hpp"
 
 struct Input : non_copyable {
-    Input(CLIArgs args);
+    Input() = default;
     ~Input() = default;
 
     void update(SDL_Event e);
-
-    std::array<std::optional<Note>, UCHAR_MAX + 1> note_mapping = {};
-    int octave = 0;
 };

@@ -18,6 +18,9 @@ struct App : non_copyable {
 
     void run();
 
+    // args
+    CLIArgs args;
+
     // render
     Render render;
     Imgui imgui;

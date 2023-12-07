@@ -10,8 +10,7 @@ constexpr static uint32_t BPM = 120;
 
 // --- Synth public ---
 
-Synth::Synth(CLIArgs args) {
-    transpose = args.transpose;
+Synth::Synth() {
     t_batch = { 0, SDL_GetTicks() };
 }
 
@@ -114,7 +113,7 @@ void Synth::handle_event() {
 int16_t Synth::sample() {
     int16_t s = 0;
     for (SynthTrack& track : tracks) {
-        s += track.sample(t_sample, transpose);
+        s += track.sample(t_sample, app->args.transpose);
     }
 
     return s;

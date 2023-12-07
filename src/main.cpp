@@ -5,16 +5,7 @@
 #include "cli.hpp"
 
 App::App(CLIArgs args) :
-    render(),
-    imgui(),
-    input(args),
-
-    keyboard(),
-    piano(),
-    accordeon(),
-
-    audio(),
-    synth(args)
+    args(args)
 {}
 
 void App::run() {
