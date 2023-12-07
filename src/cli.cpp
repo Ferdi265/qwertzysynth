@@ -31,8 +31,6 @@ CLIArgs parse_args(int argc, char ** argv) {
 
             if (arg == "piano" || arg == "p") {
                 args.kb_layout = KeyboardLayout::Piano;
-            } else if (arg == "c-griff" || arg == "cgriff" || arg == "c") {
-                args.kb_layout = KeyboardLayout::CGriff;
             } else if (arg == "b-griff" || arg == "bgriff" || arg == "b" || arg == "qwertuoso" || arg == "q") {
                 args.kb_layout = KeyboardLayout::BGriff;
             } else {
