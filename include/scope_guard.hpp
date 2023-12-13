@@ -1,16 +1,17 @@
 #pragma once
 
+#include "non_copyable.hpp"
+#include "util.hpp"
+
 template <typename Construct, typename Destruct>
-struct scope_guard {
-    scope_guard(Construct c, Destruct d) : c(c), d(d) { c(); }
+struct scope_guard : non_copyable {
+    scope_guard(Construct c, Destruct d) : d(d) { c(); }
     ~scope_guard() { d(); }
 
-    scope_guard(const scope_guard&) = delete;
-    scope_guard& operator=(const scope_guard&) = delete;
-
-    Construct c;
     Destruct d;
 };
 
 template <typename Construct, typename Destruct>
 scope_guard(Construct, Destruct) -> scope_guard<Construct, Destruct>;
+
+#define SCOPE_GUARD(a, b) scope_guard UNIQUE_IDENT(__guard_) {[&]{ a; }, [&]{ b; }}
