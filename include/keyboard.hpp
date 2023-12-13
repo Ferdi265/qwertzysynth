@@ -11,12 +11,18 @@ struct Keyboard : non_copyable {
 
     void hit_key(int keysym, uint32_t t_sdl);
     void release_key(int keysym, uint32_t t_sdl);
+
+    void hit_relative_note(Note n, uint32_t t_sdl);
+    void release_relative_note(Note n, uint32_t t_sdl);
+    void release_relative_note(uint32_t t_sdl);
+
+    void hit_note(Note n, uint32_t t_sdl);
+    void release_note(Note n, uint32_t t_sdl);
+
     void render();
 
 private:
     std::optional<Note> map_key(int keysym);
-    void hit(Note n, int octave, uint32_t t_sdl);
-    void release(Note n, int octave, uint32_t t_sdl);
 
 public:
     static constexpr int MIN_KEY = (C*3).n;

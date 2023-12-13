@@ -7,7 +7,7 @@
 void Keyboard::hit_key(int keysym, uint32_t t_sdl) {
     std::optional<Note> n = map_key(keysym);
     if (n) {
-        hit(*n, app->args.octave, t_sdl);
+        hit_relative_note(*n, t_sdl);
     } else if (keysym == SDLK_KP_PLUS) {
         app->args.octave++;
     } else if (keysym == SDLK_KP_MINUS) {
@@ -20,10 +20,37 @@ void Keyboard::hit_key(int keysym, uint32_t t_sdl) {
 void Keyboard::release_key(int keysym, uint32_t t_sdl) {
     std::optional<Note> n = map_key(keysym);
     if (n) {
-        release(*n, app->args.octave, t_sdl);
+        release_relative_note(*n, t_sdl);
     } else {
         fmt::print("release: {:x}\n", keysym);
     }
+}
+
+void Keyboard::hit_relative_note(Note n, uint32_t t_sdl) {
+    hit_note(n >> app->args.octave, t_sdl);
+    cur_note = n;
+}
+
+void Keyboard::release_relative_note(Note n, uint32_t t_sdl) {
+    release_note(n >> app->args.octave, t_sdl);
+    if (cur_note && *cur_note == n) {
+        cur_note = std::nullopt;
+    }
+}
+
+void Keyboard::release_relative_note(uint32_t t_sdl) {
+    if (cur_note) {
+        release_note(*cur_note >> app->args.octave, t_sdl);
+        cur_note = std::nullopt;
+    }
+}
+
+void Keyboard::hit_note(Note n, uint32_t t_sdl) {
+    app->synth.hit(n, t_sdl);
+}
+
+void Keyboard::release_note(Note n, uint32_t t_sdl) {
+    app->synth.release(n, t_sdl);
 }
 
 void Keyboard::render() {
@@ -81,17 +108,5 @@ std::optional<Note> Keyboard::map_key(int keysym) {
     }
 
     return n;
-}
-
-void Keyboard::hit(Note n, int octave, uint32_t t_sdl) {
-    app->synth.hit(n >> octave, t_sdl);
-    cur_note = n;
-}
-
-void Keyboard::release(Note n, int octave, uint32_t t_sdl) {
-    app->synth.release(n >> octave, t_sdl);
-    if (cur_note && *cur_note == n) {
-        cur_note = std::nullopt;
-    }
 }
 
