@@ -6,13 +6,11 @@
 void Keyboard::hit_key(int keysym, uint32_t t_sdl) {
     std::optional<Note> n = map_key(keysym);
     if (n) {
-        hit(*n, octave, t_sdl);
+        hit(*n, app->args.octave, t_sdl);
     } else if (keysym == SDLK_KP_PLUS) {
-        octave++;
-        fmt::print("octave: {}\n", octave);
+        app->args.octave++;
     } else if (keysym == SDLK_KP_MINUS) {
-        octave--;
-        fmt::print("octave: {}\n", octave);
+        app->args.octave--;
     } else {
         fmt::print("hit: {:x}\n", keysym);
     }
@@ -21,7 +19,7 @@ void Keyboard::hit_key(int keysym, uint32_t t_sdl) {
 void Keyboard::release_key(int keysym, uint32_t t_sdl) {
     std::optional<Note> n = map_key(keysym);
     if (n) {
-        release(*n, octave, t_sdl);
+        release(*n, app->args.octave, t_sdl);
     } else {
         fmt::print("release: {:x}\n", keysym);
     }
@@ -36,7 +34,7 @@ void Keyboard::render() {
         size_t cur_layout = (size_t)app->args.kb_layout;
         ImGui::Text("Keyboard Layout:");
         ImGui::SameLine(130);
-        if (ImGui::BeginCombo("##combo", KEYBOARD_LAYOUTS[cur_layout])) {
+        if (ImGui::BeginCombo("##layout", KEYBOARD_LAYOUTS[cur_layout])) {
             for (size_t i = 0; i < std::size(KEYBOARD_LAYOUTS); i++) {
                 bool is_selected = cur_layout == i;
 
@@ -51,11 +49,17 @@ void Keyboard::render() {
             ImGui::EndCombo();
         }
 
+        int new_transpose = app->args.transpose;
         ImGui::Text("Transpose:");
         ImGui::SameLine(130);
-        ImGui::InputInt("", &app->args.transpose);
+        ImGui::InputInt("##transpose", &new_transpose);
+        app->args.set_transpose(new_transpose);
 
-        ImGui::SetWindowSize(ImVec2(400, 100));
+        ImGui::Text("Octave:");
+        ImGui::SameLine(130);
+        ImGui::InputInt("##octave", &app->args.octave);
+
+        ImGui::SetWindowSize(ImVec2(400, 120));
         ImGui::End();
     }
 

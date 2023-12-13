@@ -24,7 +24,7 @@ CLIArgs parse_args(int argc, char ** argv) {
 
         if (opt == "-l" || opt == "--layout") {
             if (has_arg || arg[0] == '-') {
-                error("error: option --layout expects an argument\n");
+                error("error: option {} expects an argument\n", opt);
                 continue;
             }
             skip_arg();
@@ -38,14 +38,30 @@ CLIArgs parse_args(int argc, char ** argv) {
             }
         } else if (opt == "-t" || opt == "--transpose") {
             if (has_arg) {
-                error("error: option --transpose expects an argument\n");
+                error("error: option {} expects an argument\n", opt);
                 continue;
             }
             skip_arg();
 
-            auto [ptr, ec] = std::from_chars(arg.begin(), arg.end(), args.transpose);
+            int new_transpose = 0;
+            auto [ptr, ec] = std::from_chars(arg.begin(), arg.end(), new_transpose);
             if (ec != std::errc()) {
                 error("error: invalid transposition '{}'\n", arg);
+                continue;
+            }
+
+            args.set_transpose(new_transpose);
+
+        } else if (opt == "-o" || opt == "--octave") {
+            if (has_arg) {
+                error("error: option {} expects an argument\n", opt);
+                continue;
+            }
+            skip_arg();
+
+            auto [ptr, ec] = std::from_chars(arg.begin(), arg.end(), args.octave);
+            if (ec != std::errc()) {
+                error("error: invalid octave '{}'\n", arg);
                 continue;
             }
         } else if (opt == "--") {

@@ -23,7 +23,4 @@ public:
     static constexpr int NUM_KEYS = 12 * 3;
 
     std::optional<Note> cur_note;
-
-private:
-    int octave = 0;
 };
