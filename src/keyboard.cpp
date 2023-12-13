@@ -82,8 +82,9 @@ void Keyboard::render() {
         ImGui::SameLine(130);
         ImGui::InputInt("##octave", &app->args.octave);
 
-        ImGui::SetWindowSize(ImVec2(400, 120));
-        ImGui::SetNextWindowPos(ImGui::GetWindowPos() + ImVec2(0, ImGui::GetWindowSize().y + 10), ImGuiCond_Once);
+        ImVec2 size = ImVec2(400, 120);
+        ImGui::SetWindowSize(size);
+        ImGui::SetWindowPos(ImVec2(WIDTH * (1 / 2.), HEIGHT * (0.5 / 3.)) - (size / 2), ImGuiCond_Once);
     }
 
     app->piano.render();

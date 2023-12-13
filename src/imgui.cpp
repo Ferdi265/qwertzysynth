@@ -12,7 +12,6 @@ Imgui::Imgui() {
     ImGui_ImplSDLRenderer2_Init(app->render.renderer);
 
     ImGui::GetIO().ConfigWindowsMoveFromTitleBarOnly = true;
-    ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
 }
 
 Imgui::~Imgui() {

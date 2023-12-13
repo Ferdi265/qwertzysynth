@@ -107,7 +107,8 @@ void Piano::render() {
             app->keyboard.release_relative_note(SDL_GetTicks());
         }
 
-        ImGui::SetWindowSize(ImVec2(x * KEY_WIDTH + 16, KEY_HEIGHT + 36));
-        ImGui::SetNextWindowPos(ImGui::GetWindowPos() + ImVec2(0, ImGui::GetWindowSize().y + 10), ImGuiCond_Once);
+        ImVec2 size = ImVec2(x * KEY_WIDTH + 16, KEY_HEIGHT + 36);
+        ImGui::SetWindowSize(size);
+        ImGui::SetWindowPos(ImVec2(WIDTH * (1 / 2.), HEIGHT * (1.5 / 3.)) - (size / 2), ImGuiCond_Once);
     }
 }
