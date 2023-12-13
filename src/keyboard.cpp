@@ -83,6 +83,7 @@ void Keyboard::render() {
         ImGui::InputInt("##octave", &app->args.octave);
 
         ImGui::SetWindowSize(ImVec2(400, 120));
+        ImGui::SetNextWindowPos(ImGui::GetWindowPos() + ImVec2(0, ImGui::GetWindowSize().y + 10), ImGuiCond_Once);
     }
 
     app->piano.render();

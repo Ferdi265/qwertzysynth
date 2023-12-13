@@ -111,5 +111,6 @@ void Accordeon::render() {
         }
 
         ImGui::SetWindowSize(ImVec2((x + 2) * KEY_WIDTH / 3. + 16, KEY_HEIGHT * 3 + 36));
+        ImGui::SetNextWindowPos(ImGui::GetWindowPos() + ImVec2(0, ImGui::GetWindowSize().y + 10), ImGuiCond_Once);
     }
 }

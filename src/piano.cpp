@@ -108,5 +108,6 @@ void Piano::render() {
         }
 
         ImGui::SetWindowSize(ImVec2(x * KEY_WIDTH + 16, KEY_HEIGHT + 36));
+        ImGui::SetNextWindowPos(ImGui::GetWindowPos() + ImVec2(0, ImGui::GetWindowSize().y + 10), ImGuiCond_Once);
     }
 }

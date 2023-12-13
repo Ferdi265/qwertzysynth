@@ -10,7 +10,9 @@ Imgui::Imgui() {
     ImGui::StyleColorsDark();
     ImGui_ImplSDL2_InitForSDLRenderer(app->render.window, app->render.renderer);
     ImGui_ImplSDLRenderer2_Init(app->render.renderer);
+
     ImGui::GetIO().ConfigWindowsMoveFromTitleBarOnly = true;
+    ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
 }
 
 Imgui::~Imgui() {
