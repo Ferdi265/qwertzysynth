@@ -85,21 +85,20 @@ void Accordeon::render() {
 
         int x, key;
 
-        for (x = 0, key = MIN_KEY; key < MIN_KEY + NUM_KEYS;) {
+        for (x = 0, key = MIN_KEY; key < MIN_KEY + NUM_KEYS; x++, key++) {
             draw_key(
                 top_left + ImVec2(x * KEY_WIDTH / 3., (x % 3) * KEY_HEIGHT),
                 top_left + ImVec2(x * KEY_WIDTH / 3. + KEY_WIDTH, (x % 3) * KEY_HEIGHT + KEY_HEIGHT),
                 key_on(key) ? IM_COL32(255, 0, 0, 255) : IM_COL32_WHITE
             );
             if (!has_halfstep(key) && key + 1 < NUM_KEYS) {
+                x++, key++;
                 draw_key(
-                    top_left + ImVec2((x + 1) * KEY_WIDTH / 3., ((x + 1) % 3) * KEY_HEIGHT),
-                    top_left + ImVec2((x + 1) * KEY_WIDTH / 3. + KEY_WIDTH, ((x + 1) % 3) * KEY_HEIGHT + KEY_HEIGHT),
-                    key_on(key + 1) ? IM_COL32(255, 0, 0, 255) : IM_COL32_BLACK
+                    top_left + ImVec2(x * KEY_WIDTH / 3., (x % 3) * KEY_HEIGHT),
+                    top_left + ImVec2(x * KEY_WIDTH / 3. + KEY_WIDTH, (x % 3) * KEY_HEIGHT + KEY_HEIGHT),
+                    key_on(key) ? IM_COL32(255, 0, 0, 255) : IM_COL32_BLACK
                 );
             }
-            x += has_halfstep(key) ? 1 : 2;
-            key += has_halfstep(key) ? 1 : 2;
         }
 
         ImGui::SetWindowSize(ImVec2((x + 2) * KEY_WIDTH / 3. + 16, KEY_HEIGHT * 3 + 36));

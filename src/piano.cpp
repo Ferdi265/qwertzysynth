@@ -78,25 +78,24 @@ void Piano::render() {
         int x, key;
 
         // white keys
-        for (x = 0, key = MIN_KEY; key < MIN_KEY + NUM_KEYS; x++) {
+        for (x = 0, key = MIN_KEY; key < MIN_KEY + NUM_KEYS; x++, key += has_halfstep(key) ? 1 : 2) {
             draw_key(
                 top_left + ImVec2(x * KEY_WIDTH, 0),
                 top_left + ImVec2((x + 1) * KEY_WIDTH, KEY_HEIGHT),
                 key_on(key) ? IM_COL32(255, 0, 0, 255) : IM_COL32_WHITE
             );
-            key += has_halfstep(key) ? 1 : 2;
         }
 
         // black keys
-        for (x = 0, key = MIN_KEY; key < MIN_KEY + NUM_KEYS; x++) {
+        for (x = 0, key = MIN_KEY; key < MIN_KEY + NUM_KEYS; x++, key++) {
             if (!has_halfstep(key) && key + 1 < NUM_KEYS) {
+                key++;
                 draw_key(
                     top_left + ImVec2(x * KEY_WIDTH, 0) + ImVec2(KEY_WIDTH * 2 / 3., 0),
                     top_left + ImVec2((x + 1) * KEY_WIDTH, KEY_HEIGHT) + ImVec2(KEY_WIDTH * 1 / 3., KEY_HEIGHT * 1 / -4.),
-                    key_on(key + 1) ? IM_COL32(255, 0, 0, 255) : IM_COL32_BLACK
+                    key_on(key) ? IM_COL32(255, 0, 0, 255) : IM_COL32_BLACK
                 );
             }
-            key += has_halfstep(key) ? 1 : 2;
         }
 
         ImGui::SetWindowSize(ImVec2(x * KEY_WIDTH + 16, KEY_HEIGHT + 36));
