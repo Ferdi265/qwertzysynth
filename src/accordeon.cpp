@@ -1,6 +1,7 @@
 #include "app.hpp"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include "if_guard.hpp"
 
 const std::unordered_map<int, Note> Accordeon::KEY_MAP = [](){
     std::unordered_map<int, Note> key_map;
@@ -68,7 +69,7 @@ std::optional<Note> Accordeon::map_key(int keysym) {
 }
 
 void Accordeon::render() {
-    if (ImGui::Begin("accordeon", nullptr, ImGuiWindowFlags_NoResize)) {
+    IF_GUARD(ImGui::Begin("accordeon", nullptr, ImGuiWindowFlags_NoResize), ImGui::End()) {
         ImDrawList * draw = ImGui::GetWindowDrawList();
         ImVec2 top_left = ImGui::GetCursorScreenPos();
 
@@ -102,6 +103,5 @@ void Accordeon::render() {
         }
 
         ImGui::SetWindowSize(ImVec2((x + 2) * KEY_WIDTH / 3. + 16, KEY_HEIGHT * 3 + 36));
-        ImGui::End();
     }
 }

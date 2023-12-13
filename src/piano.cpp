@@ -1,6 +1,7 @@
 #include "app.hpp"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include "if_guard.hpp"
 
 const std::unordered_map<int, Note> Piano::KEY_MAP = [](){
     std::unordered_map<int, Note> key_map;
@@ -60,7 +61,7 @@ std::optional<Note> Piano::map_key(int keysym) {
 }
 
 void Piano::render() {
-    if (ImGui::Begin("piano", nullptr, ImGuiWindowFlags_NoResize)) {
+    IF_GUARD(ImGui::Begin("piano", nullptr, ImGuiWindowFlags_NoResize), ImGui::End()) {
         ImDrawList * draw = ImGui::GetWindowDrawList();
         ImVec2 top_left = ImGui::GetCursorScreenPos();
 
@@ -99,6 +100,5 @@ void Piano::render() {
         }
 
         ImGui::SetWindowSize(ImVec2(x * KEY_WIDTH + 16, KEY_HEIGHT + 36));
-        ImGui::End();
     }
 }

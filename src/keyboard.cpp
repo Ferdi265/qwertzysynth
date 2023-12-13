@@ -2,6 +2,7 @@
 #include "cli.hpp"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include "if_guard.hpp"
 
 void Keyboard::hit_key(int keysym, uint32_t t_sdl) {
     std::optional<Note> n = map_key(keysym);
@@ -26,7 +27,7 @@ void Keyboard::release_key(int keysym, uint32_t t_sdl) {
 }
 
 void Keyboard::render() {
-    if (ImGui::Begin("settings", nullptr, ImGuiWindowFlags_NoResize)) {
+    IF_GUARD(ImGui::Begin("settings", nullptr, ImGuiWindowFlags_NoResize), ImGui::End()) {
         ImGui::Text("Current Note:");
         ImGui::SameLine(130);
         ImGui::Text("%s", cur_note ? fmt::format("{}", *cur_note).c_str() : "none");
@@ -34,7 +35,7 @@ void Keyboard::render() {
         size_t cur_layout = (size_t)app->args.kb_layout;
         ImGui::Text("Keyboard Layout:");
         ImGui::SameLine(130);
-        if (ImGui::BeginCombo("##layout", KEYBOARD_LAYOUTS[cur_layout])) {
+        IF_GUARD(ImGui::BeginCombo("##layout", KEYBOARD_LAYOUTS[cur_layout]), ImGui::EndCombo()) {
             for (size_t i = 0; i < std::size(KEYBOARD_LAYOUTS); i++) {
                 bool is_selected = cur_layout == i;
 
@@ -46,7 +47,6 @@ void Keyboard::render() {
                     ImGui::SetItemDefaultFocus();
                 }
             }
-            ImGui::EndCombo();
         }
 
         int new_transpose = app->args.transpose;
@@ -60,7 +60,6 @@ void Keyboard::render() {
         ImGui::InputInt("##octave", &app->args.octave);
 
         ImGui::SetWindowSize(ImVec2(400, 120));
-        ImGui::End();
     }
 
     app->piano.render();
