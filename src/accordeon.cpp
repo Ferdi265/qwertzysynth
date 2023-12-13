@@ -76,14 +76,16 @@ void Accordeon::render() {
         constexpr int MIN_KEY = Keyboard::MIN_KEY;
         constexpr int NUM_KEYS = Keyboard::NUM_KEYS;
 
+        int x, key;
+        std::optional<Note> clicked_note;
+
         auto key_on = [&](int key) { return app->keyboard.cur_note && app->keyboard.cur_note->n == key; };
         auto has_halfstep = [](int key) { key -= MIN_KEY; return (key % 12) == 4 || (key % 12) == 11; };
         auto draw_key = [&](ImVec2 a, ImVec2 b, ImU32 color) {
             draw->AddRectFilled(a, b, color, 0, ImDrawCornerFlags_All);
             draw->AddRect(a - ImVec2(1, 1), b + ImVec2(1, 1), IM_COL32(128, 128, 128, 255), 0, ImDrawCornerFlags_All);
+            if (ImGui::IsMouseHoveringRect(a, b)) clicked_note = Note(key);
         };
-
-        int x, key;
 
         for (x = 0, key = MIN_KEY; key < MIN_KEY + NUM_KEYS; x++, key++) {
             draw_key(
@@ -99,6 +101,12 @@ void Accordeon::render() {
                     key_on(key) ? IM_COL32(255, 0, 0, 255) : IM_COL32_BLACK
                 );
             }
+        }
+
+        if (clicked_note && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+            app->keyboard.hit_relative_note(*clicked_note, SDL_GetTicks());
+        } else if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
+            app->keyboard.release_relative_note(SDL_GetTicks());
         }
 
         ImGui::SetWindowSize(ImVec2((x + 2) * KEY_WIDTH / 3. + 16, KEY_HEIGHT * 3 + 36));
