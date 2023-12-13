@@ -12,8 +12,6 @@ void Keyboard::hit_key(int keysym, uint32_t t_sdl) {
         app->args.octave++;
     } else if (keysym == SDLK_KP_MINUS) {
         app->args.octave--;
-    } else {
-        fmt::print("hit: {:x}\n", keysym);
     }
 }
 
@@ -21,8 +19,6 @@ void Keyboard::release_key(int keysym, uint32_t t_sdl) {
     std::optional<Note> n = map_key(keysym);
     if (n) {
         release_relative_note(*n, t_sdl);
-    } else {
-        fmt::print("release: {:x}\n", keysym);
     }
 }
 
