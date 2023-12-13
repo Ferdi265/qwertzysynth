@@ -92,15 +92,20 @@ void Keyboard::render() {
 std::optional<Note> Keyboard::map_key(int keysym) {
     std::optional<Note> n;
     switch (app->args.kb_layout) {
-        case KeyboardLayout::Piano:
+        CASE(KeyboardLayout::Piano) {
             n = app->piano.map_key(keysym);
             break;
-        case KeyboardLayout::Qwertuoso:
+        }
+
+        CASE(KeyboardLayout::Qwertuoso) {
             n = app->accordeon.map_key(keysym);
             break;
-        default:
+        }
+
+        DEFAULT() {
             fmt::print("error: invalid keyboard layout\n");
             break;
+        }
     }
 
     return n;
