@@ -1,8 +1,6 @@
-#include <SDL_keycode.h>
-#include <fmt/format.h>
-#include "app.hpp"
-#include "cli.hpp"
 #include "util.hpp"
+#include "input.hpp"
+#include "app.hpp"
 
 void Input::update(SDL_Event e) {
     switch (e.type) {

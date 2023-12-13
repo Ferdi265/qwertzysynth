@@ -1,7 +1,8 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
-#include "app.hpp"
 #include "if_guard.hpp"
+#include "piano.hpp"
+#include "app.hpp"
 
 const std::unordered_map<int, Note> Piano::KEY_MAP = [](){
     std::unordered_map<int, Note> key_map;

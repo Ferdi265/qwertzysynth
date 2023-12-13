@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <SDL.h>
 #include "non_copyable.hpp"
 

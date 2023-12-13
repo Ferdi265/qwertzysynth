@@ -3,6 +3,7 @@
 #include "non_copyable.hpp"
 #include "lazy_constructed.hpp"
 
+#include "cli.hpp"
 #include "render.hpp"
 #include "imgui.hpp"
 #include "input.hpp"

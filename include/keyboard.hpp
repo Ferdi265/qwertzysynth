@@ -1,9 +1,9 @@
 #pragma once
 
+#include <cstdint>
 #include <optional>
 #include "non_copyable.hpp"
 #include "note.hpp"
-#include "cli.hpp"
 
 struct Keyboard : non_copyable {
     Keyboard() = default;

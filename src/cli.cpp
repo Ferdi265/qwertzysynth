@@ -1,6 +1,6 @@
 #include <string_view>
-#include <fmt/format.h>
 #include <charconv>
+#include <fmt/format.h>
 #include "cli.hpp"
 
 CLIArgs parse_args(int argc, char ** argv) {

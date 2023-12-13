@@ -1,15 +1,13 @@
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <optional>
 #include <span>
 #include <atomic>
-#include <chrono>
-#include <SDL.h>
+#include "lockfree_ring_queue.hpp"
 #include "non_copyable.hpp"
 #include "note.hpp"
-#include "lockfree_ring_queue.hpp"
-#include "cli.hpp"
 
 struct SynthTime {
     uint32_t t;

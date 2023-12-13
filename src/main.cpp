@@ -1,7 +1,7 @@
 #include <SDL.h>
-#include "app.hpp"
 #include "scope_guard.hpp"
 #include "cli.hpp"
+#include "app.hpp"
 
 int main(int argc, char ** argv) {
     CLIArgs args = parse_args(argc, argv);

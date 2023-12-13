@@ -1,7 +1,7 @@
 #pragma once
 
 #include <array>
-#include <algorithm>
+#include <utility>
 #include <fmt/format.h>
 
 #define CASE(value) case value:

@@ -1,10 +1,9 @@
-#include <cstdint>
+#include <algorithm>
 #include <fmt/format.h>
-
-#include "app.hpp"
 #include "util.hpp"
-
+#include "synth.hpp"
 #include "libsynth.hpp"
+#include "app.hpp"
 
 constexpr static uint32_t BPM = 120;
 

@@ -5,6 +5,7 @@ enum struct KeyboardLayout {
     BGriff,
     Qwertuoso = BGriff,
 };
+
 constexpr const char * KEYBOARD_LAYOUTS[] = {
     "Piano",
     "B Griff (Qwertuoso)"
