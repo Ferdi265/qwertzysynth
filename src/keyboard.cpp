@@ -1,7 +1,7 @@
-#include "app.hpp"
-#include "cli.hpp"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include "app.hpp"
+#include "cli.hpp"
 #include "if_guard.hpp"
 
 void Keyboard::hit_key(int keysym, uint32_t t_sdl) {

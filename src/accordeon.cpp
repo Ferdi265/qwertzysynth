@@ -1,6 +1,6 @@
-#include "app.hpp"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include "app.hpp"
 #include "if_guard.hpp"
 
 const std::unordered_map<int, Note> Accordeon::KEY_MAP = [](){
