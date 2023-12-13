@@ -34,3 +34,7 @@ void Imgui::render() {
     ImGui::Render();
     ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 }
+
+bool Imgui::keyboard_captured() {
+    return ImGui::GetIO().WantCaptureKeyboard;
+}

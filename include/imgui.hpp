@@ -8,4 +8,6 @@ struct Imgui : non_copyable {
     void frame();
     void update(SDL_Event e);
     void render();
+
+    bool keyboard_captured();
 };
