@@ -107,8 +107,8 @@ void Accordeon::render() {
         auto key_on = [&](int key) { return app->keyboard.cur_note && app->keyboard.cur_note->n == key; };
         auto has_halfstep = [](int key) { key -= MIN_KEY; return (key % 12) == 4 || (key % 12) == 11; };
         auto draw_key = [&](ImVec2 a, ImVec2 b, ImU32 color) {
-            draw->AddRectFilled(a, b, color, 0, ImDrawCornerFlags_All);
-            draw->AddRect(a - ImVec2(1, 1), b + ImVec2(1, 1), IM_COL32(128, 128, 128, 255), 0, ImDrawCornerFlags_All);
+            draw->AddRectFilled(a, b, color);
+            draw->AddRect(a - ImVec2(1, 1), b + ImVec2(1, 1), IM_COL32(128, 128, 128, 255));
             if (ImGui::IsMouseHoveringRect(a, b)) clicked_note = Note(key);
         };
 
