@@ -1,5 +1,6 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include "log.hpp"
 #include "if_guard.hpp"
 #include "keyboard.hpp"
 #include "app.hpp"
@@ -105,7 +106,7 @@ std::optional<Note> Keyboard::map_key(int keysym) {
         }
 
         DEFAULT() {
-            fmt::print("error: invalid keyboard layout\n");
+            error("invalid keyboard layout\n");
             break;
         }
     }

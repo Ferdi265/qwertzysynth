@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <fmt/format.h>
-#include "util.hpp"
+#include "log.hpp"
 #include "synth.hpp"
 #include "libsynth.hpp"
 #include "app.hpp"
@@ -15,12 +15,12 @@ Synth::Synth() {
 
 void Synth::hit(Note n, uint32_t t_sdl) {
     SynthEvent e = { event_time(t_sdl), n, true };
-    warn_on(!events.push(e), "failed to push {} event\n", e);
+    if (!events.push(e)) warn("failed to push {} event\n", e);
 }
 
 void Synth::release(Note n, uint32_t t_sdl) {
     SynthEvent e = { event_time(t_sdl), n, false };
-    warn_on(!events.push(e), "failed to push {} event\n", e);
+    if (!events.push(e)) warn("failed to push {} event\n", e);
 }
 
 void Synth::update(std::span<int16_t> buffer) {
@@ -43,7 +43,7 @@ uint32_t Synth::event_time(uint32_t t_sdl) const {
     int32_t t_diff = t_sdl_diff * int32_t(SAMPLE_RATE) / 1000;
     // place all events one buffer size in the future to ensure correct timing
     int32_t t = base.t + BUF_SIZE + t_diff;
-    warn_on(t_sdl_diff < 0, "calculating sample timing for event in the past, base.t = {}, t = {}\n",
+    if (t_sdl_diff < 0) warn("calculating sample timing for event in the past, base.t = {}, t = {}\n",
         base.t, t
     );
     return t;
@@ -96,8 +96,8 @@ void Synth::handle_event() {
 
     int32_t diff = e->t - t_sample;
     if (diff <= 0) {
-        fmt::print("info: {}\n", *e);
-        warn_on(diff < 0, "event handled {} samples too late\n", -diff);
+        info("{}\n", *e);
+        if (diff < 0) warn("event handled {} samples too late\n", -diff);
 
         if (e->hit) {
             hit();

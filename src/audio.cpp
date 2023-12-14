@@ -1,5 +1,6 @@
 #include <span>
 #include <fmt/format.h>
+#include "log.hpp"
 #include "audio.hpp"
 #include "app.hpp"
 
@@ -20,15 +21,15 @@ Audio::Audio() {
         nullptr, false, &audio_config, &audio_config, SDL_AUDIO_ALLOW_SAMPLES_CHANGE | SDL_AUDIO_ALLOW_FREQUENCY_CHANGE
     );
     if (device <= 0) {
-        fmt::print("error: failed to open audio device\n");
+        error("failed to open audio device\n");
         return;
     }
 
     if (audio_config.freq != SAMPLE_RATE) {
-        fmt::print("warn: samplerate changed to {} Hz\n", audio_config.freq);
+        warn("samplerate changed to {} Hz\n", audio_config.freq);
     }
 
-    fmt::print("info: buffer size is {} samples\n", audio_config.samples);
+    info("buffer size is {} samples\n", audio_config.samples);
 
     SDL_PauseAudioDevice(device, false);
 }

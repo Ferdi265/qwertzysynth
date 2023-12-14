@@ -10,11 +10,3 @@
 #define CONCAT_INTERNAL__(a, b) a ## b
 #define CONCAT(a, b) CONCAT_INTERNAL__(a, b)
 #define UNIQUE_IDENT(a) CONCAT(a, __COUNTER__)
-
-template <typename... Args>
-void warn_on(bool cond, fmt::format_string<Args...> fmt, Args&&... args) {
-    if (cond) {
-        fmt::print("warn: ");
-        fmt::print(fmt, std::forward<Args&&>(args)...);
-    }
-}
