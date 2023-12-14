@@ -3,6 +3,31 @@
 #include <fmt/format.h>
 #include "cli.hpp"
 #include "log.hpp"
+#include "accordeon.hpp"
+#include "piano.hpp"
+
+void usage() {
+    fmt::print(
+        "usage: qwertzysynth [OPTIONS]\n"
+        "\n"
+        "OPTIONS:\n"
+        "  -h, --help ............ show this help\n"
+        "  -l L, --layout L ...... set initial layout (default qwertuoso)\n"
+        "    b, b-griff .......... chromatic button accordion B-Griff (default)\n"
+        "    q, qwertuoso ........ alias for b-griff\n"
+        "    p, piano ............ piano key layout\n"
+        "  -t T, --transpose T ... transpose by T half steps\n"
+        "  -o O, --octave O ...... transpose by O octaves\n"
+        "\n"
+        "LAYOUTS:\n"
+        "  All QwertzySynth layouts are designed for QWERTZ keyboard layouts.\n"
+        "  Support for QWERTY might be provided in a future version.\n"
+        "\n"
+    );
+
+    Accordeon::print_layout_table();
+    Piano::print_layout_table();
+}
 
 CLIArgs parse_args(int argc, char ** argv) {
     CLIArgs args;
@@ -32,7 +57,10 @@ CLIArgs parse_args(int argc, char ** argv) {
             return true;
         };
 
-        if (opt == "-l" || opt == "--layout") {
+        if (opt == "-h" || opt == "--help") {
+            usage();
+            fail = true;
+        } else if (opt == "-l" || opt == "--layout") {
             if (!expect_arg()) continue;
             skip_arg();
 

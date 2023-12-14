@@ -1,5 +1,6 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include <fmt/format.h>
 #include "if_guard.hpp"
 #include "piano.hpp"
 #include "app.hpp"
@@ -51,6 +52,29 @@ const std::unordered_map<int, Note> Piano::KEY_MAP = [](){
 
     return key_map;
 }();
+
+void Piano::print_layout_table() {
+    fmt::print(
+        "PIANO LAYOUT:\n"
+        "\n"
+        "   KEY | NOTE || KEY | NOTE || KEY | NOTE || KEY | NOTE\n"
+        "  ------------------------------------------------------\n"
+        "       |      ||     |      ||     |      ||  <  | D#3\n"
+        "    1  |      ||  Q  | C-4  ||  A  |      ||  Y  | C-3\n"
+        "    2  | C#4  ||  W  | D-4  ||  S  | C#3  ||  X  | D-3\n"
+        "    3  | D#4  ||  E  | E-4  ||  D  | D#3  ||  C  | E-3\n"
+        "    4  |      ||  R  | F-4  ||  F  |      ||  V  | F-3\n"
+        "    5  | F#4  ||  T  | G-4  ||  G  | F#3  ||  B  | G-3\n"
+        "    6  | G#4  ||  Z  | A-4  ||  H  | G#3  ||  N  | A-3\n"
+        "    7  | A#4  ||  U  | B-4  ||  J  | A#3  ||  M  | B-3\n"
+        "    8  |      ||  I  | C-5  ||  K  |      ||  ,  | C-4\n"
+        "    9  | C#5  ||  O  | D-5  ||  L  | C#4  ||  .  | D-4\n"
+        "    0  | D#5  ||  P  | E-5  ||  Ö  | D#4  ||  -  | E-4\n"
+        "    ß  |      ||  Ü  | F-5  ||  Ä  |      ||     |\n"
+        "    ´  |      ||  +  | G-5  ||  #  | F#4  ||     |\n"
+        "\n"
+    );
+}
 
 std::optional<Note> Piano::map_key(int keysym) {
     auto it = KEY_MAP.find(keysym);

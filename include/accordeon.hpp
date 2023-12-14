@@ -13,6 +13,8 @@ struct Accordeon : non_copyable {
     std::optional<Note> map_key(int keysym);
     void render();
 
+    static void print_layout_table();
+
 private:
     static constexpr size_t KEY_WIDTH = 30;
     static constexpr size_t KEY_HEIGHT = 30;
