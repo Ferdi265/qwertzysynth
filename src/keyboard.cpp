@@ -9,9 +9,9 @@ void Keyboard::hit_key(int keysym, uint32_t t_sdl) {
     std::optional<Note> n = map_key(keysym);
     if (n) {
         hit_relative_note(*n, t_sdl);
-    } else if (keysym == SDLK_KP_PLUS) {
+    } else if (keysym == SDLK_KP_PLUS || keysym == SDLK_F2) {
         app->args.octave++;
-    } else if (keysym == SDLK_KP_MINUS) {
+    } else if (keysym == SDLK_KP_MINUS || keysym == SDLK_F1) {
         app->args.octave--;
     }
 }
