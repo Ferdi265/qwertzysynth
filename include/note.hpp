@@ -24,14 +24,14 @@ enum struct NoteName {
 };
 using enum NoteName;
 
-constexpr float TET_STEP = 1.0594630943592953f;
+constexpr double TET_STEP = 1.0594630943592953f;
 
 struct Note {
     explicit constexpr Note(int n) : n(n) {}
     constexpr Note(NoteName n) : n((int)n) {}
 
-    constexpr float freq() const noexcept {
-        float f = 440;
+    constexpr double freq() const noexcept {
+        double f = 440;
         int n = this->n - (int)A;
 
         if (n > 0) {
