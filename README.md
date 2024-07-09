@@ -61,6 +61,23 @@ PIANO LAYOUT:
     ß  |      ||  Ü  | F-5  ||  Ä  |      ||     |
     ´  |      ||  +  | G-5  ||  #  | F#4  ||     |
 
+PADME LAYOUT:
+
+   KEY |  NOTE  || KEY |  NOTE  || KEY |  NOTE  || KEY |  NOTE 
+  --------------------------------------------------------------
+       |        ||     |        ||     |        ||  <  | E  5th
+    1  | B  3rd ||  Q  | F# 3rd ||  A  | B  5th ||  Y  | F# 5th
+    2  | Db 3rd ||  W  | Ab 3rd ||  S  | Db 5th ||  X  | Ab 5th
+    3  | Eb 3rd ||  E  | Bb 3rd ||  D  | Eb 5th ||  C  | Bb 5th
+    4  | F  3rd ||  R  | C  3rd ||  F  | F  5th ||  V  | C  5th
+    5  | G  3rd ||  T  | D  3rd ||  G  | G  5th ||  B  | D  5th
+    6  | A  3rd ||  Z  | E  3rd ||  H  | A  5th ||  N  | E  5th
+    7  | B  3rd ||  U  | F# 3rd ||  J  | B  5th ||  M  | F# 5th
+    8  | Db 3rd ||  I  | Ab 3rd ||  K  | Db 5th ||  ,  | Ab 5th
+    9  | Eb 3rd ||  O  | Bb 3rd ||  L  | Eb 5th ||  .  | Bb 5th
+    0  | F  3rd ||  P  | C  3rd ||  Ö  | F  5th ||  -  | C  5th
+    ß  | G  3rd ||  Ü  | D  3rd ||  Ä  | G  5th ||     |
+    ´  |        ||  +  | E  3rd ||  #  | A  5th ||     |
 ```
 
 The layout can also be interactively switched using the ImGui UI.
