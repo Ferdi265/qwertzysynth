@@ -43,11 +43,11 @@ void Keyboard::release_relative_note(uint32_t t_sdl) {
 }
 
 void Keyboard::hit_note(Note n, uint32_t t_sdl) {
-    app->synth.hit(n, t_sdl);
+    app->synth.hit(n, HitType::HIT_PADME_FIFTH, t_sdl);
 }
 
 void Keyboard::release_note(Note n, uint32_t t_sdl) {
-    app->synth.release(n, t_sdl);
+    app->synth.release(n, HitType::HIT_PADME_FIFTH, t_sdl);
 }
 
 void Keyboard::render() {

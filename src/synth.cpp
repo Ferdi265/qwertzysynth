@@ -13,13 +13,13 @@ Synth::Synth() {
     t_batch = { 0, SDL_GetTicks() };
 }
 
-void Synth::hit(Note n, uint32_t t_sdl) {
-    SynthEvent e = { event_time(t_sdl), n, true };
+void Synth::hit(Note n, HitType type, uint32_t t_sdl) {
+    SynthEvent e = { event_time(t_sdl), n, true, type };
     if (!events.push(e)) warn("failed to push {} event\n", e);
 }
 
-void Synth::release(Note n, uint32_t t_sdl) {
-    SynthEvent e = { event_time(t_sdl), n, false };
+void Synth::release(Note n, HitType type, uint32_t t_sdl) {
+    SynthEvent e = { event_time(t_sdl), n, false, type };
     if (!events.push(e)) warn("failed to push {} event\n", e);
 }
 
@@ -52,7 +52,7 @@ uint32_t Synth::event_time(uint32_t t_sdl) const {
 void Synth::hit() {
     SynthTrack* hit_track = &tracks[0];
     for (SynthTrack& track : tracks) {
-        if (track.n == e->n || !track.n) {
+        if ((track.n == e->n && track.type == e->type) || !track.n) {
             hit_track = &track;
             break;
         } else if (track.t_hit <= hit_track->t_hit) {
@@ -60,7 +60,7 @@ void Synth::hit() {
         }
     }
 
-    hit_track->hit(t_sample, e->n);
+    hit_track->hit(t_sample, e->n, e->type);
 }
 
 void Synth::release() {
@@ -120,8 +120,9 @@ int16_t Synth::sample() {
 
 // --- SynthTrack ---
 
-void SynthTrack::hit(uint32_t t, Note nt) {
+void SynthTrack::hit(uint32_t t, Note nt, HitType tp) {
     n = nt;
+    type = tp;
     t_hit = t;
     t_release = -1U;
 }
@@ -144,14 +145,72 @@ uint32_t SynthTrack::release_time(uint32_t t) const {
     return t_release == -1U ? -1U : t - t_release;
 }
 
+constexpr float lerpclamp(float a, float amin, float amax, float bmin, float bmax) {
+    if (a < amin) a = amin;
+    if (a > amax) a = amax;
+    float factor = (a - amin) / (amax - amin);
+    return bmin + factor * (bmax - bmin);
+}
+
 constexpr adsr vol_envelope = ADSR(BPM, SAMPLE_RATE, 1./32, 1./4, 3./4, 1.2, 1);
+int16_t SynthTrack::sample_raw(Note n, uint32_t t) {
+    double level = vol_envelope.level(hit_time(t), release_time(t));
+    int16_t sample = triangle{ note_to_samples(n, SAMPLE_RATE), 0.2, level }.level(hit_time(t)) * (1 << 12);
+
+    return sample;
+}
+
+constexpr Note pitch_center = C*4;
+int16_t SynthTrack::sample_centered(Note n, uint32_t t) {
+    int16_t sample = sample_raw(n, t);
+
+    int diff = std::abs(n.n - pitch_center.n);
+    sample *= lerpclamp(diff, 0, 40, 1, 0);
+
+    return sample;
+}
+
+int16_t SynthTrack::sample_padme(Note n, uint32_t t) {
+    int16_t sample = 0;
+    sample += sample_centered(n - 36, t);
+    sample += sample_centered(n - 24, t);
+    sample += sample_centered(n - 12, t);
+    sample += sample_centered(n, t);
+    sample += sample_centered(n + 12, t);
+    sample += sample_centered(n + 24, t);
+    sample += sample_centered(n + 36, t);
+
+    return sample;
+}
+
+int16_t SynthTrack::sample_padme_fifth(Note n, uint32_t t) {
+    int16_t sample = sample_padme(n, t) * 0.5 + sample_padme(n + 7, t) * 0.5;
+
+    return sample;
+}
+
+int16_t SynthTrack::sample_padme_third(Note n, uint32_t t) {
+    int16_t sample = sample_padme(n, t) * 0.5 + sample_padme(n + 3, t) * 0.5;
+
+    return sample;
+}
+
 int16_t SynthTrack::sample(uint32_t t, int transpose) {
     if (!n.has_value()) {
         return 0;
     }
 
-    double level = vol_envelope.level(hit_time(t), release_time(t));
-    int16_t sample = triangle{ note_to_samples(*n + transpose, SAMPLE_RATE), 0.2, level }.level(hit_time(t)) * (1 << 12);
+    Note note = *n + transpose;
+    int16_t sample = 0;
+    if (type == HitType::HIT_NORMAL) {
+        sample = sample_raw(note, t);
+    } else if (type == HitType::HIT_PADME) {
+        sample = sample_padme(note, t);
+    } else if (type == HitType::HIT_PADME_FIFTH) {
+        sample = sample_padme_fifth(note, t);
+    } else if (type == HitType::HIT_PADME_THIRD) {
+        sample = sample_padme_third(note, t);
+    }
 
     if (vol_envelope.release_done(release_time(t))) {
         off();
@@ -159,3 +218,4 @@ int16_t SynthTrack::sample(uint32_t t, int transpose) {
 
     return sample;
 }
+
