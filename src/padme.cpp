@@ -2,11 +2,14 @@
 #include <imgui.h>
 #include <fmt/format.h>
 #include "if_guard.hpp"
-#include "accordeon.hpp"
+#include "padme.hpp"
 #include "app.hpp"
 
-const std::unordered_map<int, Note> Accordeon::KEY_MAP = [](){
+const std::unordered_map<int, Note> Padme::KEY_MAP = [](){
     std::unordered_map<int, Note> key_map;
+
+    // TODO: fix this
+    return key_map;
 
     key_map.emplace('1', C*3);
     key_map.emplace('2', Dis*3);
@@ -61,7 +64,10 @@ const std::unordered_map<int, Note> Accordeon::KEY_MAP = [](){
     return key_map;
 }();
 
-void Accordeon::print_layout_table() {
+void Padme::print_layout_table() {
+    // TODO: fix this
+    return;
+
     fmt::print(
         "B-GRIFF LAYOUT:\n"
         "\n"
@@ -84,58 +90,15 @@ void Accordeon::print_layout_table() {
     );
 }
 
-std::optional<Note> Accordeon::map_key(int keysym) {
+std::optional<std::pair<Note, HitType>> Padme::map_key(int keysym) {
     auto it = KEY_MAP.find(keysym);
     if (it ==  KEY_MAP.end()) {
         return std::nullopt;
     } else {
-        return it->second;
+        return std::make_pair(it->second, HitType::HIT_PADME);
     }
 }
 
-void Accordeon::render() {
-    IF_GUARD(ImGui::Begin("accordeon", nullptr, ImGuiWindowFlags_NoResize), ImGui::End()) {
-        ImDrawList * draw = ImGui::GetWindowDrawList();
-        ImVec2 top_left = ImGui::GetCursorScreenPos();
+void Padme::render() {
 
-        constexpr int MIN_KEY = Keyboard::MIN_KEY;
-        constexpr int NUM_KEYS = Keyboard::NUM_KEYS;
-
-        int x, key;
-        std::optional<Note> clicked_note;
-
-        auto key_on = [&](int key) { return app->keyboard.cur_note && app->keyboard.cur_note->first.n == key; };
-        auto has_halfstep = [](int key) { key -= MIN_KEY; return (key % 12) == 4 || (key % 12) == 11; };
-        auto draw_key = [&](ImVec2 a, ImVec2 b, ImU32 color) {
-            draw->AddRectFilled(a, b, color);
-            draw->AddRect(a - ImVec2(1, 1), b + ImVec2(1, 1), IM_COL32(128, 128, 128, 255));
-            if (ImGui::IsMouseHoveringRect(a, b)) clicked_note = Note(key);
-        };
-
-        for (x = 0, key = MIN_KEY; key < MIN_KEY + NUM_KEYS; x++, key++) {
-            draw_key(
-                top_left + ImVec2(x * KEY_WIDTH / 3., (x % 3) * KEY_HEIGHT),
-                top_left + ImVec2(x * KEY_WIDTH / 3. + KEY_WIDTH, (x % 3) * KEY_HEIGHT + KEY_HEIGHT),
-                key_on(key) ? IM_COL32(255, 0, 0, 255) : IM_COL32_WHITE
-            );
-            if (!has_halfstep(key) && key + 1 < NUM_KEYS) {
-                x++, key++;
-                draw_key(
-                    top_left + ImVec2(x * KEY_WIDTH / 3., (x % 3) * KEY_HEIGHT),
-                    top_left + ImVec2(x * KEY_WIDTH / 3. + KEY_WIDTH, (x % 3) * KEY_HEIGHT + KEY_HEIGHT),
-                    key_on(key) ? IM_COL32(255, 0, 0, 255) : IM_COL32_BLACK
-                );
-            }
-        }
-
-        if (clicked_note && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-            app->keyboard.hit_relative_note(*clicked_note, app->keyboard.default_hit_type, SDL_GetTicks());
-        } else if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
-            app->keyboard.release_relative_note(SDL_GetTicks());
-        }
-
-        ImVec2 size = ImVec2((x + 2) * KEY_WIDTH / 3. + 16, KEY_HEIGHT * 3 + 36);
-        ImGui::SetWindowSize(size);
-        ImGui::SetWindowPos(ImVec2(WIDTH * (1 / 2.), HEIGHT * (2.5 / 3.)) - (size / 2), ImGuiCond_Once);
-    }
 }

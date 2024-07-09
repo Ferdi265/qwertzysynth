@@ -9,13 +9,6 @@
 #include "non_copyable.hpp"
 #include "note.hpp"
 
-enum class HitType {
-    HIT_NORMAL,
-    HIT_PADME,
-    HIT_PADME_FIFTH,
-    HIT_PADME_THIRD
-};
-
 struct SynthTime {
     uint32_t t;
     uint32_t t_sdl;

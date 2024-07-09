@@ -4,11 +4,13 @@ enum struct KeyboardLayout {
     Piano,
     BGriff,
     Qwertuoso = BGriff,
+    Padme,
 };
 
 constexpr const char * KEYBOARD_LAYOUTS[] = {
     "Piano",
-    "B Griff (Qwertuoso)"
+    "B Griff (Qwertuoso)",
+    "Padme"
 };
 
 struct CLIArgs {

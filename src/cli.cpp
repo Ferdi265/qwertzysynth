@@ -16,6 +16,7 @@ void usage() {
         "    b, b-griff .......... chromatic button accordion B-Griff (default)\n"
         "    q, qwertuoso ........ alias for b-griff\n"
         "    p, piano ............ piano key layout\n"
+        "    P, padme ............ padme key layout\n"
         "  -t T, --transpose T ... transpose by T half steps\n"
         "  -o O, --octave O ...... transpose by O octaves\n"
         "\n"
@@ -27,6 +28,7 @@ void usage() {
 
     Accordeon::print_layout_table();
     Piano::print_layout_table();
+    Padme::print_layout_table();
 }
 
 CLIArgs parse_args(int argc, char ** argv) {
@@ -68,6 +70,8 @@ CLIArgs parse_args(int argc, char ** argv) {
                 args.kb_layout = KeyboardLayout::Piano;
             } else if (arg == "b-griff" || arg == "bgriff" || arg == "b" || arg == "qwertuoso" || arg == "q") {
                 args.kb_layout = KeyboardLayout::BGriff;
+            } else if (arg == "padme" || arg == "P") {
+                args.kb_layout = KeyboardLayout::Padme;
             } else {
                 error("invalid keyboard layout '{}'\n", arg);
             }

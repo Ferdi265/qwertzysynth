@@ -3,6 +3,20 @@
 #include <compare>
 #include <fmt/core.h>
 
+enum class HitType {
+    HIT_NORMAL,
+    HIT_PADME,
+    HIT_PADME_FIFTH,
+    HIT_PADME_THIRD
+};
+
+constexpr const char * HIT_TYPES[] = {
+    "Normal",
+    "Padme",
+    "Padme Fifth",
+    "Padme Third",
+};
+
 enum struct NoteName {
     C = 0,
     Cis = 1,
@@ -90,6 +104,27 @@ struct Note {
     }
 
     int n;
+};
+
+template <>
+struct fmt::formatter<HitType> {
+    template<typename ParseContext>
+    constexpr auto parse(ParseContext& ctx) {
+        return ctx.begin();
+    }
+
+    template<typename FormatContext>
+    auto format(const HitType& type, FormatContext& ctx) {
+        return fmt::format_to(ctx.out(), "{}",
+            (
+                type == HitType::HIT_NORMAL ? "" :
+                type == HitType::HIT_PADME ? " (Pad)" :
+                type == HitType::HIT_PADME_FIFTH ? " (Pad Fifth)" :
+                type == HitType::HIT_PADME_THIRD ? " (Pad Third)" :
+                "?"
+            )
+        );
+    }
 };
 
 template <>

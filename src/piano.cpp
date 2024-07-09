@@ -96,7 +96,7 @@ void Piano::render() {
         int x, key;
         std::optional<Note> clicked_note;
 
-        auto key_on = [&](int key) { return app->keyboard.cur_note && app->keyboard.cur_note->n == key; };
+        auto key_on = [&](int key) { return app->keyboard.cur_note && app->keyboard.cur_note->first.n == key; };
         auto has_halfstep = [](int key) { key -= MIN_KEY; return (key % 12) == 4 || (key % 12) == 11; };
         auto draw_key = [&](ImVec2 a, ImVec2 b, ImU32 color) {
             draw->AddRectFilled(a, b, color);
@@ -126,7 +126,7 @@ void Piano::render() {
         }
 
         if (clicked_note && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-            app->keyboard.hit_relative_note(*clicked_note, SDL_GetTicks());
+            app->keyboard.hit_relative_note(*clicked_note, app->keyboard.default_hit_type, SDL_GetTicks());
         } else if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
             app->keyboard.release_relative_note(SDL_GetTicks());
         }

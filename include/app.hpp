@@ -10,6 +10,7 @@
 #include "keyboard.hpp"
 #include "piano.hpp"
 #include "accordeon.hpp"
+#include "padme.hpp"
 #include "audio.hpp"
 #include "synth.hpp"
 
@@ -33,6 +34,7 @@ struct App : non_copyable {
     // visualization
     Piano piano;
     Accordeon accordeon;
+    Padme padme;
 
     // music
     Audio audio;
