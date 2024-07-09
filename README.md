@@ -6,6 +6,8 @@ System layout. Inspired by [shric/midi](https://github.com/shric/midi/) and
 recently extended this to also include a keyboard layout similar to
 [Padme](https://www.linusakesson.net/music/padme/index.php).
 
+![qwertzysynth](https://github.com/Ferdi265/qwertzysynth/assets/4077106/1aefd88f-dd4d-44e8-bb29-14f7010347f2)
+
 ## Usage
 
 ```
