@@ -19,5 +19,5 @@ private:
     static constexpr size_t KEY_WIDTH = 30;
     static constexpr size_t KEY_HEIGHT = 30;
 
-    static const std::unordered_map<int, Note> KEY_MAP;
+    static const std::unordered_map<int, std::pair<Note, HitType>> KEY_MAP;
 };

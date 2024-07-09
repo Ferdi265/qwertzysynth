@@ -5,61 +5,57 @@
 #include "padme.hpp"
 #include "app.hpp"
 
-const std::unordered_map<int, Note> Padme::KEY_MAP = [](){
-    std::unordered_map<int, Note> key_map;
+const std::unordered_map<int, std::pair<Note, HitType>> Padme::KEY_MAP = [](){
+    std::unordered_map<int, std::pair<Note, HitType>> key_map;
 
-    // TODO: fix this
-    return key_map;
+    key_map.emplace('y', std::make_pair(Ges*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('x', std::make_pair(As*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('c', std::make_pair(Bes*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('v', std::make_pair(C*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('b', std::make_pair(D*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('n', std::make_pair(E*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('m', std::make_pair(Ges*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace(',', std::make_pair(As*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('.', std::make_pair(Bes*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('-', std::make_pair(C*4, HitType::HIT_PADME_FIFTH));
 
-    key_map.emplace('1', C*3);
-    key_map.emplace('2', Dis*3);
-    key_map.emplace('3', Fis*3);
-    key_map.emplace('4', A*3);
-    key_map.emplace('5', C*4);
-    key_map.emplace('6', Dis*4);
-    key_map.emplace('7', Fis*4);
-    key_map.emplace('8', A*4);
-    key_map.emplace('9', C*5);
-    key_map.emplace('0', Dis*5);
-    key_map.emplace(0xdf /* ß */, Fis*5);
+    key_map.emplace('a', std::make_pair(B*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('s', std::make_pair(Des*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('d', std::make_pair(Es*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('f', std::make_pair(F*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('g', std::make_pair(G*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('h', std::make_pair(A*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('j', std::make_pair(B*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('k', std::make_pair(Des*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('l', std::make_pair(Es*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace(0xf6 /* 'ö' */, std::make_pair(F*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace(0xe4 /* 'ä' */, std::make_pair(G*4, HitType::HIT_PADME_FIFTH));
+    key_map.emplace('#', std::make_pair(A*4, HitType::HIT_PADME_FIFTH));
 
-    key_map.emplace('q', Cis*3);
-    key_map.emplace('w', E*3);
-    key_map.emplace('e', G*3);
-    key_map.emplace('r', Ais*3);
-    key_map.emplace('t', Cis*4);
-    key_map.emplace('z', E*4);
-    key_map.emplace('u', G*4);
-    key_map.emplace('i', Ais*4);
-    key_map.emplace('o', Cis*5);
-    key_map.emplace('p', E*5);
-    key_map.emplace(0xfc /* 'ü' */, G*5);
-    key_map.emplace('+', Ais*5);
+    key_map.emplace('q', std::make_pair(Ges*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('w', std::make_pair(As*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('e', std::make_pair(Bes*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('r', std::make_pair(C*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('t', std::make_pair(D*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('z', std::make_pair(E*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('u', std::make_pair(Ges*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('i', std::make_pair(As*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('o', std::make_pair(Bes*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('p', std::make_pair(C*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace(0xfc /* 'ü' */, std::make_pair(D*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('*', std::make_pair(E*4, HitType::HIT_PADME_THIRD));
 
-    key_map.emplace('a', D*3);
-    key_map.emplace('s', F*3);
-    key_map.emplace('d', Gis*3);
-    key_map.emplace('f', B*3);
-    key_map.emplace('g', D*4);
-    key_map.emplace('h', F*4);
-    key_map.emplace('j', Gis*4);
-    key_map.emplace('k', B*4);
-    key_map.emplace('l', D*5);
-    key_map.emplace(0xf6 /* 'ö' */, F*5);
-    key_map.emplace(0xe4 /* 'ä' */, Gis*5);
-    key_map.emplace('#', B*5);
-
-    key_map.emplace('<', C*3);
-    key_map.emplace('y', Dis*3);
-    key_map.emplace('x', Fis*3);
-    key_map.emplace('c', A*3);
-    key_map.emplace('v', C*4);
-    key_map.emplace('b', Dis*4);
-    key_map.emplace('n', Fis*4);
-    key_map.emplace('m', A*4);
-    key_map.emplace(',', C*5);
-    key_map.emplace('.', Dis*5);
-    key_map.emplace('-', Fis*5);
+    key_map.emplace('1', std::make_pair(B*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('2', std::make_pair(Des*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('3', std::make_pair(Es*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('4', std::make_pair(F*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('5', std::make_pair(G*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('6', std::make_pair(A*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('7', std::make_pair(B*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('8', std::make_pair(Des*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('9', std::make_pair(Es*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('0', std::make_pair(F*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace(0xdf /* ß */, std::make_pair(G*4, HitType::HIT_PADME_THIRD));
 
     return key_map;
 }();
@@ -95,7 +91,7 @@ std::optional<std::pair<Note, HitType>> Padme::map_key(int keysym) {
     if (it ==  KEY_MAP.end()) {
         return std::nullopt;
     } else {
-        return std::make_pair(it->second, HitType::HIT_PADME);
+        return it->second;
     }
 }
 
