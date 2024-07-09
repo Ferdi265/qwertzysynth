@@ -145,10 +145,10 @@ uint32_t SynthTrack::release_time(uint32_t t) const {
     return t_release == -1U ? -1U : t - t_release;
 }
 
-constexpr float lerpclamp(float a, float amin, float amax, float bmin, float bmax) {
+constexpr double lerpclamp(double a, double amin, double amax, double bmin, double bmax) {
     if (a < amin) a = amin;
     if (a > amax) a = amax;
-    float factor = (a - amin) / (amax - amin);
+    double factor = (a - amin) / (amax - amin);
     return bmin + factor * (bmax - bmin);
 }
 
