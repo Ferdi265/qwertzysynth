@@ -8,6 +8,7 @@
 const std::unordered_map<int, std::pair<Note, HitType>> Padme::KEY_MAP = [](){
     std::unordered_map<int, std::pair<Note, HitType>> key_map;
 
+    key_map.emplace('<', std::make_pair(E*4, HitType::HIT_PADME_FIFTH));
     key_map.emplace('y', std::make_pair(Ges*4, HitType::HIT_PADME_FIFTH));
     key_map.emplace('x', std::make_pair(As*4, HitType::HIT_PADME_FIFTH));
     key_map.emplace('c', std::make_pair(Bes*4, HitType::HIT_PADME_FIFTH));
@@ -43,7 +44,7 @@ const std::unordered_map<int, std::pair<Note, HitType>> Padme::KEY_MAP = [](){
     key_map.emplace('o', std::make_pair(Bes*4, HitType::HIT_PADME_THIRD));
     key_map.emplace('p', std::make_pair(C*4, HitType::HIT_PADME_THIRD));
     key_map.emplace(0xfc /* 'ü' */, std::make_pair(D*4, HitType::HIT_PADME_THIRD));
-    key_map.emplace('*', std::make_pair(E*4, HitType::HIT_PADME_THIRD));
+    key_map.emplace('+', std::make_pair(E*4, HitType::HIT_PADME_THIRD));
 
     key_map.emplace('1', std::make_pair(B*4, HitType::HIT_PADME_THIRD));
     key_map.emplace('2', std::make_pair(Des*4, HitType::HIT_PADME_THIRD));
@@ -61,7 +62,26 @@ const std::unordered_map<int, std::pair<Note, HitType>> Padme::KEY_MAP = [](){
 }();
 
 void Padme::print_layout_table() {
-    // TODO: layout table
+    fmt::print(
+        "PADME LAYOUT:\n"
+        "\n"
+        "   KEY |  NOTE  || KEY |  NOTE  || KEY |  NOTE  || KEY |  NOTE \n"
+        "  --------------------------------------------------------------\n"
+        "       |        ||     |        ||     |        ||  <  | E  5th\n"
+        "    1  | B  3rd ||  Q  | F# 3rd ||  A  | B  5th ||  Y  | F# 5th\n"
+        "    2  | Db 3rd ||  W  | Ab 3rd ||  S  | Db 5th ||  X  | Ab 5th\n"
+        "    3  | Eb 3rd ||  E  | Bb 3rd ||  D  | Eb 5th ||  C  | Bb 5th\n"
+        "    4  | F  3rd ||  R  | C  3rd ||  F  | F  5th ||  V  | C  5th\n"
+        "    5  | G  3rd ||  T  | D  3rd ||  G  | G  5th ||  B  | D  5th\n"
+        "    6  | A  3rd ||  Z  | E  3rd ||  H  | A  5th ||  N  | E  5th\n"
+        "    7  | B  3rd ||  U  | F# 3rd ||  J  | B  5th ||  M  | F# 5th\n"
+        "    8  | Db 3rd ||  I  | Ab 3rd ||  K  | Db 5th ||  ,  | Ab 5th\n"
+        "    9  | Eb 3rd ||  O  | Bb 3rd ||  L  | Eb 5th ||  .  | Bb 5th\n"
+        "    0  | F  3rd ||  P  | C  3rd ||  Ö  | F  5th ||  -  | C  5th\n"
+        "    ß  | G  3rd ||  Ü  | D  3rd ||  Ä  | G  5th ||     |\n"
+        "    ´  |        ||  +  | E  3rd ||  #  | A  5th ||     |\n"
+        "\n"
+    );
 }
 
 std::optional<std::pair<Note, HitType>> Padme::map_key(int keysym) {
