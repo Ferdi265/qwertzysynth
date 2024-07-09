@@ -65,7 +65,7 @@ void Synth::hit() {
 
 void Synth::release() {
     for (SynthTrack& track : tracks) {
-        if (track.n == e->n) {
+        if (track.n == e->n && track.type == e->type) {
             track.release(t_sample);
         }
     }
