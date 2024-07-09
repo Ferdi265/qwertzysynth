@@ -8,6 +8,19 @@ recently extended this to also include a keyboard layout similar to
 
 ![qwertzysynth](https://github.com/Ferdi265/qwertzysynth/assets/4077106/1aefd88f-dd4d-44e8-bb29-14f7010347f2)
 
+## Features
+
+Qwertzysynth is quite hacky, and doesn't support many things yet and lacks many
+features that Qwertuoso and Padme have, but it does have a few things.
+
+- Three Keyboard Layouts:
+  - Piano Layout (similar to Famitracker)
+  - Qwertuoso (B-Griff) Layout
+  - Padme (5ths and 3rds in Circle of Fifths) Layout
+- Octave Select (Numpad +/- and via GUI)
+- Semitone Transposition (via GUI)
+- Fully synthesized modulated Triangle wave (currently with hardcoded ADSR envelope)
+
 ## Usage
 
 ```
