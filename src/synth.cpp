@@ -52,10 +52,17 @@ uint32_t Synth::event_time(uint32_t t_sdl) const {
 void Synth::hit() {
     SynthTrack* hit_track = &tracks[0];
     for (SynthTrack& track : tracks) {
-        if ((track.n == e->n && track.type == e->type) || !track.n) {
+        if (track.n == e->n && track.type == e->type) {
             hit_track = &track;
             break;
-        } else if (track.t_hit <= hit_track->t_hit) {
+        }
+
+        auto track_order = std::make_tuple(track.n.has_value(), track.t_release, track.t_hit);
+        auto hit_track_order = std::make_tuple(hit_track->n.has_value(), hit_track->t_release, hit_track->t_hit);
+        auto diff = track_order <=> hit_track_order;
+        if (diff > 0) {
+            continue;
+        } else if (diff < 0) {
             hit_track = &track;
         }
     }
