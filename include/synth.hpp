@@ -26,12 +26,12 @@ struct SynthEvent {
 template <>
 struct fmt::formatter<SynthEvent> {
     template<typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) {
+    constexpr auto parse(ParseContext& ctx) const {
         return ctx.begin();
     }
 
     template<typename FormatContext>
-    auto format(const SynthEvent& e, FormatContext& ctx) {
+    auto format(const SynthEvent& e, FormatContext& ctx) const {
         return fmt::format_to(ctx.out(), "{} {} @ {}",
             e.hit ? "hit" : "rel",
             e.n,

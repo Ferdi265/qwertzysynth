@@ -109,12 +109,12 @@ struct Note {
 template <>
 struct fmt::formatter<HitType> {
     template<typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) {
+    constexpr auto parse(ParseContext& ctx) const {
         return ctx.begin();
     }
 
     template<typename FormatContext>
-    auto format(const HitType& type, FormatContext& ctx) {
+    auto format(const HitType& type, FormatContext& ctx) const {
         return fmt::format_to(ctx.out(), "{}",
             (
                 type == HitType::HIT_NORMAL ? "" :
@@ -130,12 +130,12 @@ struct fmt::formatter<HitType> {
 template <>
 struct fmt::formatter<Note> {
     template<typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) {
+    constexpr auto parse(ParseContext& ctx) const {
         return ctx.begin();
     }
 
     template<typename FormatContext>
-    auto format(const Note& nt, FormatContext& ctx) {
+    auto format(const Note& nt, FormatContext& ctx) const {
         int octave = nt.octave();
         NoteName n = nt.name();
         return fmt::format_to(ctx.out(), "{}{}",
