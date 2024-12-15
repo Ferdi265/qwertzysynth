@@ -35,6 +35,7 @@ OPTIONS:
     P, padme ............ padme key layout
   -t T, --transpose T ... transpose by T half steps
   -o O, --octave O ...... transpose by O octaves
+  -p P, --polyphony P ... number of concurrent voices P
 
 LAYOUTS:
   All QwertzySynth layouts are designed for QWERTZ keyboard layouts.
