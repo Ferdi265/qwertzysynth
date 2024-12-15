@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstddef>
+
 enum struct KeyboardLayout {
     Piano,
     BGriff,
@@ -17,6 +19,7 @@ struct CLIArgs {
     KeyboardLayout kb_layout = KeyboardLayout::Qwertuoso;
     int transpose = 0;
     int octave = 0;
+    size_t polyphony = 2;
 
     void set_transpose(int new_transpose) {
         while (new_transpose < 0) {

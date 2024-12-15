@@ -24,6 +24,11 @@ void Synth::release(Note n, HitType type, uint32_t t_sdl) {
 }
 
 void Synth::update(std::span<int16_t> buffer) {
+    size_t polyphony = app->args.polyphony;
+    if (tracks.size() != polyphony) {
+        tracks.resize(polyphony);
+    }
+
     t_batch = { t_sample, SDL_GetTicks() };
 
     for (size_t i = 0; i < buffer.size(); ) {

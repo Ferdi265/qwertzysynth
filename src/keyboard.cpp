@@ -100,7 +100,15 @@ void Keyboard::render() {
         ImGui::SameLine(130);
         ImGui::InputInt("##octave", &app->args.octave);
 
-        ImVec2 size = ImVec2(400, 150);
+        int new_polyphony = app->args.polyphony;
+        ImGui::Text("Polyphony:");
+        ImGui::SameLine(130);
+        ImGui::InputInt("##polyphony", &new_polyphony);
+        if (new_polyphony > 0) {
+            app->args.polyphony = new_polyphony;
+        }
+
+        ImVec2 size = ImVec2(400, 165);
         ImGui::SetWindowSize(size);
         ImGui::SetWindowPos(ImVec2(WIDTH * (1 / 2.), HEIGHT * (0.5 / 3.)) - (size / 2), ImGuiCond_Once);
     }

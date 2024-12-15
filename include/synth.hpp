@@ -5,6 +5,7 @@
 #include <optional>
 #include <span>
 #include <atomic>
+#include <vector>
 #include "lockfree_ring_queue.hpp"
 #include "non_copyable.hpp"
 #include "note.hpp"
@@ -85,5 +86,5 @@ private:
 
     uint32_t t_sample = 0;
     std::optional<SynthEvent> e;
-    std::array<SynthTrack, 2> tracks;
+    std::vector<SynthTrack> tracks;
 };

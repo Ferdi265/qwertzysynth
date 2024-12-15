@@ -19,6 +19,7 @@ void usage() {
         "    P, padme ............ padme key layout\n"
         "  -t T, --transpose T ... transpose by T half steps\n"
         "  -o O, --octave O ...... transpose by O octaves\n"
+        "  -p P, --polyphony P ... number of concurrent voices P\n"
         "\n"
         "LAYOUTS:\n"
         "  All QwertzySynth layouts are designed for QWERTZ keyboard layouts.\n"
@@ -95,6 +96,15 @@ CLIArgs parse_args(int argc, char ** argv) {
             auto [ptr, ec] = std::from_chars(arg.begin(), arg.end(), args.octave);
             if (ec != std::errc()) {
                 error("invalid octave '{}'\n", arg);
+                continue;
+            }
+        } else if (opt == "-p" || opt == "--polyphony") {
+            if (!expect_arg(true)) continue;
+            skip_arg();
+
+            auto [ptr, ec] = std::from_chars(arg.begin(), arg.end(), args.polyphony);
+            if (ec != std::errc()) {
+                error("invalid polyphony '{}'\n", arg);
                 continue;
             }
         } else if (opt == "--") {
